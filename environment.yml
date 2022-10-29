@@ -1,0 +1,30 @@
+name: yourmeals
+channels:
+  - pytorch
+  - conda-forge
+  - anaconda-fusion
+  - defaults
+dependencies:
+  - python=3.9.*
+  - numpy
+  - matplotlib
+  - pyyaml
+  - pandas
+  - seaborn
+  - ipywidgets
+  - h5py<3.2
+  - scikit-learn
+  - nose
+  - notebook
+  - torchvision
+  - cudatoolkit
+  - pytorch
+  - pytorch-lightning
+  - torchmetrics
+  - gin-config
+  - absl-py
+  - faiss
+  - fastapi=0.81.0
+  - envparse==0.2.0
+  - motor==3.0.0
+  - uvicorn==0.18.3
