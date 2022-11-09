@@ -102,7 +102,7 @@ def dish_full_content_parser(href: str) -> dict:
         dish_info['fats'] = int(energy_value[2].text)
         dish_info['carbohydates'] = int(energy_value[3].text)
     else:
-        print(f'Empty energy_value for {href}\n', energy_value)
+        print(f'Empty energy_value for {href}\t', energy_value)
         dish_info['calories'] = 500
         dish_info['proteins'] = 30
         dish_info['fats'] = 50
@@ -124,7 +124,7 @@ def dish_full_content_parser(href: str) -> dict:
         if recipe:
             dish_info['recipe'] = [value.text.replace(u'\xa0', u' ')[1:] for value in recipe]
         else:
-            print(f'Empty recipe for {href}\n', recipe)
+            print(f'Empty recipe for {href}\t', recipe)
             dish_info['recipe'] = 'Нет рецепта'
     
     return dish_info
