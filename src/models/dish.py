@@ -1,4 +1,7 @@
-class Dish:
+from yourmeals.src.models.base_model import BaseModel as BaseModel
+
+
+class Dish(BaseModel):
     def __init__(self, name: str, calories: float, proteins: float, fats: float, carbohydrates: float, 
                  recipe: str, description: str, preparing_time: str, ingredients: list[dict], 
                  portions: int, tags: list, img_src: str) -> None:
