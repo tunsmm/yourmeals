@@ -1,6 +1,5 @@
 import datetime
 
-from yourmeals.src.models.base_model import BaseModel as BaseModel
 from yourmeals.src.models.dish import Dish as Dish
 
 
@@ -13,7 +12,7 @@ def get_meal(self, meal_type: str):
         raise ValueError(f"Неизвестный тип блюда - {meal_type}")
 
 
-class Meal(BaseModel):
+class Meal:
     def __init__(self, dishes: list[Dish] = None, date=datetime.datetime.now) -> None:
         self.dishes = dishes
         self.date = date

@@ -1,8 +1,7 @@
-from yourmeals.src.models.base_model import BaseModel as BaseModel
 from yourmeals.src.models.meal import Meal as Meal
 
 
-class User(BaseModel):
+class User:
     def __init__(self, email: str, name: str, 
                  weight: float, height: float, strategy: str, gender: str,
                  history: list[Meal] = None) -> None:
