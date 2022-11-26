@@ -25,39 +25,18 @@ def create_records() -> dict:
             time.sleep(600)        
             continue
         
-        dish_num = 0
         for href, img, tags in all_dishes:
-            dish_num += 1
-            try:
-                dish_info = dish_full_content_parser(href)
-                dish_info['img_src'] = img
-                dish_info['tags'] = tags
-                mongo_client.dishes.insert_one(dish_info)
-                time.sleep(10)
-            except requests.exceptions.Timeout:
-                print("-" * 5, f"new href error for dish {dish_num}", "-" * 5)
-                print((href, img, tags))
-                time.sleep(600)
+            while True:
                 try:
                     dish_info = dish_full_content_parser(href)
                     dish_info['img_src'] = img
                     dish_info['tags'] = tags
                     mongo_client.dishes.insert_one(dish_info)
-                    time.sleep(9)
+                    time.sleep(10)
+                    break
                 except requests.exceptions.Timeout:
-                    print("-" * 5, f"new href error for dish {dish_num}", "-" * 5)
-                    print((href, img, tags))
-                    time.sleep(300)
-                    try:
-                        dish_info = dish_full_content_parser(href)
-                        dish_info['img_src'] = img
-                        dish_info['tags'] = tags
-                        mongo_client.dishes.insert_one(dish_info)
-                        time.sleep(9)
-                    except requests.exceptions.Timeout:
-                        print("-" * 5, f"new href error for dish {dish_num}", "-" * 5)
-                        print((href, img, tags))
-                        time.sleep(300)
+                    print("error: ", (href, img, tags))
+                    time.sleep(600)
                 
         print(f"page {page} done")
         page += 1
