@@ -11,9 +11,20 @@ class User:
         self.height = height
         self.strategy = strategy
         self.gender = gender
-        self.history = self.get_history(history)
-        self.set_full_meals()
-        self.set_light_meals()
+        
+        if history:
+            self.history = history
+        else: 
+            self.history = []
+        
+        self.light_meals = 2
+        if self.strategy == "health":
+            self.full_meals = 3
+        elif self.strategy == "loss":
+            self.full_meals = 2
+        elif self.strategy == "gain":
+            self.full_meals = 4
+
         self.set_calories()
 
     def add_meal(self, meal: Meal):
@@ -22,10 +33,10 @@ class User:
             raise ValueError(
                 f"Попытка превысить количество приемов пищи в день. Сейчас - {meals_per_day}, максимум - 10."
             )
-        self.get_history().append(meal)
+        self.history.append(meal)
     
     def get_meal(self, date):
-        for meal in self.user.history:
+        for meal in self.history:
             if meal.date == date:
                 return meal 
     
@@ -33,37 +44,10 @@ class User:
         meal = self.get_meal(date)
         del meal
     
-    def get_history(self, history: list[Meal] = None):
-        if not self.history:
-            self.history = list()
-        if history:
-            self.history = history
-        return self.history
-    
-    def set_full_meals(self):
-        if self.strategy == "health":
-            self.full_meals = 3
-        elif self.strategy == "loss":
-            self.full_meals = 2
-        elif self.strategy == "gain":
-            self.full_meals = 4
-    
-    def get_full_meals(self):
-        return self.full_meals
-    
-    def set_light_meals(self):
-        self.light_meals = 2
-    
-    def get_light_meals(self):
-        return self.light_meals
-    
     def set_calories(self):
         gender_factor = self._get_gender_factor(self.gender)
         strategy_factor = self._get_strategy_factor(self.strategy)
         self.calories = (10 * self.weight + 6.25 * self.height - 4.92 * self.age + gender_factor) * strategy_factor
-    
-    def get_calories(self):
-        return self.calories
     
     def _get_gender_factor(self, gender: str) -> int:
         if gender == "man":
