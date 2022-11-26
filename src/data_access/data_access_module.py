@@ -21,9 +21,13 @@ class DataAccessModule:
             height=user.height,
             gender=user.gender,
             strategy=user.strategy,
+            full_meals=user.full_meals,
+            light_meals=user.light_meals,
+            calories=user.calories,
+            history=user.history,
         )
         orm_user.save()
-
+        
     def get_user(self, email: str) -> User:
         orm_user = orm.User.objects.get(email=email)
         return User(
@@ -40,7 +44,7 @@ class DataAccessModule:
         )
 
     def get_dish(self, dish_name: str) -> Dish:
-        orm_dish = orm.Dish.objects.get(name=dish_name)
+        orm_dish = orm.Dish.objects(name__icontains=dish_name)
         return Dish(
             name=orm_dish.name,
             calories=orm_dish.calories,

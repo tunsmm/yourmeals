@@ -11,7 +11,10 @@ class User:
         self.height = height
         self.strategy = strategy
         self.gender = gender
-        self.history = history
+        self.history = self.get_history(history)
+        self.set_full_meals()
+        self.set_light_meals()
+        self.set_calories()
 
     def add_meal(self, meal: Meal):
         meals_per_day = sum(m.date == meal.date for m in self.history)
@@ -21,9 +24,20 @@ class User:
             )
         self.get_history().append(meal)
     
-    def get_history(self):
+    def get_meal(self, date):
+        for meal in self.user.history:
+            if meal.date == date:
+                return meal 
+    
+    def delete_meal(self, date):
+        meal = self.get_meal(date)
+        del meal
+    
+    def get_history(self, history: list[Meal] = None):
         if not self.history:
             self.history = list()
+        if history:
+            self.history = history
         return self.history
     
     def set_full_meals(self):
