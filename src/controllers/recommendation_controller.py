@@ -22,4 +22,4 @@ class RecommendationController:
         history = user.history
         last_meal = max(history, key=attrgetter('date'))
         dish = max(last_meal.dishes, key=attrgetter('calories'))
-        return dish
+        return dish.name
