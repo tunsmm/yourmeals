@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Меню{% endblock %}
+{% block header %}Меню{% endblock %}
+{% block content %}
+
+<p>
+</p>
+<div class="row justify-content-center">
+    <div class="col-md-8 p-2">
+        <div class="card">
+            <div class="card-header">Добавление блюда</div>
+            <div class="card-body">
+
+                {% for error in form.errors %}
+                  <div class="alert alert-danger" role="alert">
+                      {{ error|escape }}
+                  </div>
+                {% endfor %}
+
+
+                <form method="GET" action=".">
+                    {% for field in form %}
+                    <div class="form-group row" aria-required={% if field.field.required %}"true"{% else %}"false"{% endif %}>
+                        <label for="{{ field.id_for_label }}" class="col-md-4 col-form-label text-md-right">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
+                        <div class="col-md-6">
+                            {% if field.name != 'date_1' %}
+                                {{ field }}
+                            {% endif %}
+
+                            {% if field.help_text %}
+                            <small id="{{ field.id_for_label }}-help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <div class="col-md-6 offset-md-4">              
+                        <button type="submit" class="btn btn-primary">
+                            Найти блюда
+                        </button>
+                    </div>
+                </form>
+            </div> <!-- card body -->
+        </div> <!-- card -->
+
+    </div> <!-- col -->
+    
+    <div class="col-md-8 p-2">
+        <div class="card">
+            <div class="card-header">Найденные блюда</div>
+            <div class="card-body">
+                <div class="ml-3">
+                    <form method="GET" action=".">
+                        {% for dish in search_dishes %}
+                            
+                                <input class="form-check-input" type="checkbox" name="dish" value="{{ dish.id }}" id="{{ dish.id }}">
+                                <label class="form-check-label" for="{{ dish.id }}">
+                                    {{ dish }}
+                                </label>
+                                <br>
+                            
+                        {% endfor %}
+                        <div class="col-md-6 offset-md-4">              
+                            <button type="submit" class="btn btn-primary">
+                                Закрепить блюда
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div> <!-- card body -->
+        </div> <!-- card -->
+    </div>
+
+</div> <!-- row -->
+
+{% endblock %}
+
+

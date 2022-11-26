@@ -1,5 +1,6 @@
 from yourmeals.src.data_access.data_access_module import DataAccessModule as DAM
 import yourmeals.src.models as models
+import utils
 
 
 class MainController:
@@ -23,10 +24,10 @@ class MainController:
     def add_dish_to_meal(self):
         pass
     
-    def get_dish(self, dish_name: str):
+    def get_dish(self, dish_name: str) -> str:
         dish = self.dam.get_dish(dish_name=dish_name)
-        return dish.toJSON()
+        return utils.toJSON(dish)
     
-    def get_user(self, email: str):
+    def get_user(self, email: str) -> str:
         user = self.dam.get_user(email=email)
-        return user.toJSON()
+        return utils.toJSON(user)

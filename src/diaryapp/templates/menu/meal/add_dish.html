@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Меню{% endblock %}
+{% block header %}Меню{% endblock %}
+{% block content %}
+
+<p>
+</p>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">Добавление блюда</div>
+            <div class="card-body">
+                <form method="GET" action=".">
+                    
+                    <div class="form-group row">
+                        <label class="form-check-label">
+                            Наименование блюда: 
+                        </label>
+                        <input class="form-control" type="text" name="name" required id="id_name" placeholder="Авокадо" {% if name %}value="{{ name }}"{% endif %}>
+                        <small id="nameHelp" class="form-text text-muted">Пожалуйста, напишите некоторые слова, которые должны быть в названии блюда</small>
+                        
+                    </div>
+                    
+                    <div class="col-md-6 offset-md-4">              
+                        <button type="submit" class="btn btn-primary">
+                            Найти блюда
+                        </button>
+                    </div>
+                    
+                    <div class="col-md-12 ml-2 p-10">
+                        <label class="form-label"><b>Выбранные блюда:</b></label>
+                        {% for dish in selected_dishes %}
+                        <div class="form-group row mb-2">
+                            <input class="form-check-input" type="checkbox" name="dish" value="{{ dish.id }}" id="{{ dish.id }}" checked>
+                            <label class="form-check-label" for="{{ dish.id }}">
+                                {{ dish }}
+                            </label>
+                        </div>
+                        {% empty %}
+                        Пока не выбрано ни одного блюда. 
+                        {% endfor %}        
+                    </div>
+
+                    <div class="col-md-12 ml-2 p-10">
+                        <label class="form-label"><b>Найденные блюда:</b></label>
+                        {% for dish in search_dishes %}
+                        <div class="form-group row mb-2">
+                            <input class="form-check-input" type="checkbox" name="dish" value="{{ dish.id }}" id="{{ dish.id }}">
+                            <label class="form-check-label" for="{{ dish.id }}">
+                                {{ dish }}
+                            </label>
+                        </div>
+                        {% empty %}
+                        Блюд по заданному фильтру не найдено. 
+                        {% endfor %}        
+                    </div>
+
+                    
+                </form>
+            </div> <!-- card body -->
+        </div> <!-- card -->
+
+    </div> <!-- col -->
+
+</div> <!-- row -->
+
+{% endblock %}
+
+

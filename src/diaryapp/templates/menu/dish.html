@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %} {{ dish.name }} {% endblock %}
+{% block header %} {{ dish.name }} {% endblock %}
+{% block content %}
+
+    <div>
+        
+        Порций: {{ dish.portions }}<br>
+        Время приготовления: {{ dish.preparing_time }}<br>
+        <br>
+    </div>
+
+    <div>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Калорий
+                <span class="badge badge-primary badge-pill">{{ dish.calories }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Белков
+                <span class="badge badge-primary badge-pill">{{ dish.proteins }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Жиров
+                <span class="badge badge-primary badge-pill">{{ dish.fats }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Углеводов
+                <span class="badge badge-primary badge-pill">{{ dish.carbohydates }}</span>
+            </li>
+        </ul>
+    </div>
+
+    {% if dish.description != 'Нет описания' %}
+    <div>
+        <br>
+        <b>Описание:</b> {{ dish.description }}
+        <br>
+    </div>
+    {% endif %}
+
+    <br><b>Ингредиенты</b>: 
+    <ul class="list-group">
+        <br> 
+    {% for ing, val in dish.ingredients.items %}
+        <li class="list-group-item">
+            {{ ing }}: {{ val }} 
+        </li>
+    {% endfor %}
+    </ul>
+
+    {% if dish.recipe != 'Нет рецепта' %}
+    <br> <b>Рецепт</b>:  
+        <ul class="list-group list-group-flush">
+            <br> 
+        {% for r in dish.recipe %} 
+            <li class="list-group-item">{{ r }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    
+    <br>
+
+    <a href="{% url 'menu' %}" class="btn btn-info" >Обратно в меню</a>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block header %}Создать профиль{% endblock %}
+{% block content %}
+
+    {% comment %} <h3>
+        Полное имя: {{ client.full_name }}, цель диеты - {{ client.type_diet }}
+    </h3>
+    <p>
+        
+        Пол - 
+        {% if client.sex %}
+        Мужчина
+        {% else %}
+        Женщина
+        {% endif %}
+        <br>
+        Cпорта в неделю - {{ client.sport_on_week }} <br>
+        Дней в неделю без соблюдения диеты {{ client.no_eats_days_per_week }} <br>
+        Приемов пищи в день {{ client.eats_per_day }} <br>
+    </p>
+    <a href="{% url 'client-detail' client.id %}" class="link-secondary" >Читать детальнее</a>
+    <hr>
+    {% endfor %}
+
+    <form action="{% url 'client-new' %}">
+        <br>
+        <button class="btn btn-primary">
+            Добавить клиента
+        </button>
+    </form> {% endcomment %}
+
+{% endblock %}

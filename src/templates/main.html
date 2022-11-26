@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Главная страница{% endblock %}
+{% block header %}Главная страница на сайте{% endblock %}
+{% block content %}
+    <h3>
+        Здесь вы можете выбрать нужный раздел сайта
+    </h3>
+
+    <a href="{% url 'user' %}" class="btn btn-primary btn-lg mt-2" >Просмотреть профиль</a>
+    <a href="{% url 'menu' %}" class="btn btn-primary btn-lg mt-2" >Просмотреть меню</a>
+
+{% endblock %}

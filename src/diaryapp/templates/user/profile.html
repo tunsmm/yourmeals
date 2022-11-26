@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Профиль {{ user.name }}{% endblock %}
+{% block header %}Личная информация{% endblock %}
+{% block content %}
+
+    <h3>
+        Здравствуйте, {{ user.name }}!
+    </h3>
+    <p>
+        Ваша почта: {{ user.email }}<br>
+        Указанный вес: {{ user.weight }}<br>
+        Указанный рост: {{ user.height }}<br>
+    </p>
+
+    <h4>
+        Ваши предпочтения по диете на каждый день:
+    </h4>
+    <p>
+        Полноценных приемов пищи: {{ user.full_meals }}<br>
+        Перекусов: {{ user.light_meals }}<br>
+        Калорий: {{ user.calories }}<br>
+    </p>
+
+    <a href="{% url 'user-update' %}" class="btn btn-warning" >Изменить данные профиля</a>
+
+{% endblock %}
