@@ -21,16 +21,11 @@ class MainController:
         
     def update_user(self, email: str, name: str, weight: float, height: float, strategy: str, gender: str):
         user = self.dam.get_user(email=email)
-        if user.name != name:
-            user.name = name
-        if user.weight != weight:
-            user.weight = weight
-        if user.height != height:
-            user.height = height
-        if user.strategy != strategy:
-            user.strategy = strategy
-        if user.gender != gender:
-            user.gender = gender
+        user.name = name
+        user.weight = weight
+        user.height = height
+        user.strategy = strategy
+        user.gender = gender
         self.dam.save_user(user)
     
     def add_meal_to_user(self, email: str, meal_type: str, dishes: list[str], date):
