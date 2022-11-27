@@ -1,7 +1,7 @@
-from yourmeals.src.data_access.data_access_module import DataAccessModule as DAM
-from yourmeals.src.models.meal import get_meal
-import yourmeals.src.models as models
-import utils
+from yourmeals.data_access.data_access_module import DataAccessModule as DAM
+from yourmeals.models.meal import get_meal
+import yourmeals.models as models
+import yourmeals.utils as utils
 
 
 class MainController:

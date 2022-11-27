@@ -1,6 +1,6 @@
 import datetime
 
-from yourmeals.src.models.dish import Dish as Dish
+from yourmeals.models.dish import Dish as Dish
 
 
 class Meal:

@@ -1,4 +1,4 @@
-from yourmeals.src.models.meal import Meal as Meal
+from yourmeals.models.meal import Meal as Meal
 
 
 class User:

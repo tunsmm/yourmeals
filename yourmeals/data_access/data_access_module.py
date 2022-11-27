@@ -1,7 +1,7 @@
-from yourmeals.src.models.dish import Dish as Dish
-from yourmeals.src.models.user import User as User
+from yourmeals.models.dish import Dish as Dish
+from yourmeals.models.user import User as User
 
-import yourmeals.src.diaryapp.models as orm
+import yourmeals.diaryapp.models as orm
 
 
 class DataAccessModule:
@@ -50,7 +50,7 @@ class DataAccessModule:
             calories=orm_dish.calories,
             proteins=orm_dish.proteins,
             fats=orm_dish.fats,
-            carbohydates=orm_dish.carbohydates,
+            carbohydrates=orm_dish.carbohydates,
             recipe=orm_dish.recipe,
             description=orm_dish.description,
             preparing_time=orm_dish.preparing_time(),
@@ -59,3 +59,10 @@ class DataAccessModule:
             tags=orm_dish.tags,
             img_src=orm_dish.img_src,
         )
+
+    def get_name_recipes(self) -> dict[str, str]:
+        names = Dish.objects.values_list('name')
+        recipes = orm.Dish.objects.values_list('recipe')
+        recipes = [' '.join(recipe) for recipe in recipes]
+        name_recipe_dict = dict(zip(names, recipes))
+        return name_recipe_dict
