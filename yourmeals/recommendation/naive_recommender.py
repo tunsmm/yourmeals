@@ -13,7 +13,7 @@ class NaiveRecommender:
     def get_recommendation(self, user_email):
         user = self.dam.get_user(user_email)
         history = user.history
-        if len(history) == 0:
+        if len(history) <= 1:
             return None
         last_meal = max(history, key=attrgetter('date'))
         dish = max(last_meal.dishes, key=attrgetter('calories'))
