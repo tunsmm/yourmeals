@@ -16,7 +16,7 @@
         
         {% for dish in meal.dishes %}
         <p>
-            <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.id %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'user' %}" class="p-2 text-sm text-danger" >Удалить</a>
+            <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'user' %}" class="p-2 text-sm text-danger" >Удалить</a>
         </p> 
         {% endfor %}
         <hr>

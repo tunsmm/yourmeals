@@ -8,12 +8,15 @@
     </h3>
     <p>
         Ваша почта: {{ user.email }}<br>
+        Указанный пол: {{ user.gender }}<br>
         Указанный вес: {{ user.weight }}<br>
         Указанный рост: {{ user.height }}<br>
+        Указанный возраст: {{ user.age }}<br>
+        Указанная стратегия питания: {{ user.strategy }}<br>
     </p>
 
     <h4>
-        Ваши предпочтения по диете на каждый день:
+        Ваши нормальные показатели по диете на каждый день:
     </h4>
     <p>
         Полноценных приемов пищи: {{ user.full_meals }}<br>
@@ -21,6 +24,6 @@
         Калорий: {{ user.calories }}<br>
     </p>
 
-    <a href="{% url 'user-update' %}" class="btn btn-warning" >Изменить данные профиля</a>
+    {% comment %} <a href="{% url 'user-update' %}" class="btn btn-warning" >Изменить данные профиля</a> {% endcomment %}
 
 {% endblock %}

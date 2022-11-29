@@ -1,40 +1,65 @@
 from functools import wraps
+import json
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from .forms import DishToMealForm, LoginForm, MealForm, UserForm
+from controllers.main_controller import MainController
+from .forms import DishToMealForm, LoginForm, MealForm, UserForm, UserForm2
 from .models import Dish, User
 
 
-# None
-USER_ID = '6373b29a4b923a1729e4a30a' 
+USER_MAIL = 'help@mail.ru'  # '6373b29a4b923a1729e4a30a' 
+
+MainContr = MainController()
 
 
 def authorize(f):
     @wraps(f)
     def decorated_function(*args, **kws):
-        if USER_ID is None: 
+        if USER_MAIL is None: 
             return HttpResponseRedirect('/login/')
         return f(*args, **kws)  
     return decorated_function
 
 
 def set_user(id: str) -> None:
-    global USER_ID
-    USER_ID = id
+    global USER_MAIL
+    USER_MAIL = id
 
 
 def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            user = User.objects.get(email=request.POST['email'])
-            set_user(user.id)
+            email = form.data['email']
+            set_user(email)
             return HttpResponseRedirect('/user/')
 
     template_name = "user/login.html"
     form = LoginForm()
+    data = {"form": form}
+    return render(request, template_name, data)
+
+
+def user_create(request):
+    if request.method == 'POST':
+        form = UserForm2(request.POST)
+        if form.is_valid():
+            MainContr.create_user(
+                email=form.data['email'],
+                name=form.data['name'],
+                age=int(form.data['age']),
+                weight=float(form.data['weight']),
+                height=float(form.data['height']),
+                gender=form.data['gender'],
+                strategy=form.data['strategy'],
+            )
+            return HttpResponseRedirect('/')
+    else:
+        form = UserForm2
+
+    template_name = "user/update_profile.html"
     data = {"form": form}
     return render(request, template_name, data)
 
@@ -46,21 +71,21 @@ def main(request):
 
 @authorize
 def user_profile(request):
-    user = User.objects.get(id=USER_ID)
+    user = json.loads(MainContr.get_user(email=USER_MAIL))
     data = {"user": user}
     return render(request, "user/profile.html", data)
 
 
 @authorize
 def user_update(request):
-    user = User.objects.get(id=USER_ID)
+    user = json.loads(MainContr.get_user(email=USER_MAIL))
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
+        form = UserForm2(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/user/')
     else:
-        form = UserForm(instance=user)
+        form = UserForm2(instance=user)
 
     template_name = "user/update_profile.html"
     data = {"form": form}
@@ -69,27 +94,13 @@ def user_update(request):
 
 @authorize
 def user_menu(request):
-    user = User.objects.get(id=USER_ID)
-    return render(request, "menu/main.html", {"meals": user.meals})
-
-
-def user_create(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = UserForm
-
-    template_name = "user/update_profile.html"
-    data = {"form": form}
-    return render(request, template_name, data)
+    user = json.loads(MainContr.get_user(email=USER_MAIL))
+    return render(request, "menu/main.html", {"meals": user.history})
 
 
 @authorize
 def meal_delete(request, id):
-    user = User.objects.get(id=USER_ID)
+    user = json.loads(MainContr.get_user(email=USER_MAIL))
     del user.meals[id]
     user.save()
     return HttpResponseRedirect('/menu/')
@@ -97,7 +108,7 @@ def meal_delete(request, id):
 
 @authorize
 def meal_create(request):
-    user = User.objects.get(id=USER_ID)
+    user = User.objects.get(id=USER_MAIL)
     if request.method == 'POST':
         form = MealForm(user, request.POST,)
         if form.is_valid() and request.POST['meal_type'] and request.POST['dishes'] and request.POST['date']:

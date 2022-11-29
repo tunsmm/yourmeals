@@ -6,13 +6,13 @@ import mongoengine
 mongoengine.connect(db="yourmeals", host="localhost", port=27017, alias="mydb-alias")
 
 MEAL_TYPE_CHOICES = [
-    ('Light', 'Перекус'),
-    ('Full', 'Полноценный'),
+    ('light', 'Перекус'),
+    ('full', 'Полноценный'),
 ]
 
 GENDER_CHOICES = [
-    ('Woman', 'Женщина'),
-    ('Man', 'Мужчина'),
+    ('woman', 'Женщина'),
+    ('man', 'Мужчина'),
 ]
 
 STRATEGY_CHOICES = [
@@ -62,6 +62,7 @@ class User(mongoengine.Document):
     global STRATEGY_CHOICES
     email = mongoengine.EmailField(required=True, unique=True)
     name = mongoengine.StringField(default="Пользователь")
+    age = mongoengine.IntField(default=1, min_value=1, max_value=200)
     weight = mongoengine.FloatField(default=60, min_value=1, max_value=500)
     height = mongoengine.FloatField(default=160, min_value=1, max_value=300)
     calories = mongoengine.IntField(default=1000, min_value=0, max_value=20000)

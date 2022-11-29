@@ -1,17 +1,18 @@
-from yourmeals.data_access.data_access_module import DataAccessModule as DAM
-from yourmeals.models.meal import get_meal
-import yourmeals.models as models
-import yourmeals.utils as utils
+from data_access.data_access_module import DataAccessModule as DAM
+from models.meal import get_meal
+import models as models
+import utils as utils
 
 
 class MainController:
     def __init__(self) -> None:
         self.dam = DAM()
         
-    def create_user(self, email: str, name: str, weight: float, height: float, strategy: str, gender: str,):
+    def create_user(self, email: str, name: str, age: int, weight: float, height: float, strategy: str, gender: str,):
         user = models.user.User(
             email=email,
             name=name,
+            age=age,
             weight=weight,
             height=height,
             gender=gender,
@@ -19,9 +20,10 @@ class MainController:
         )
         self.dam.save_user(user)
         
-    def update_user(self, email: str, name: str, weight: float, height: float, strategy: str, gender: str):
+    def update_user(self, email: str, name: str, age: int, weight: float, height: float, strategy: str, gender: str):
         user = self.dam.get_user(email=email)
         user.name = name
+        user.age = age
         user.weight = weight
         user.height = height
         user.strategy = strategy

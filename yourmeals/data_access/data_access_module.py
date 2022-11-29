@@ -1,7 +1,7 @@
-from yourmeals.models.dish import Dish as Dish
-from yourmeals.models.user import User as User
+from models.dish import Dish as Dish
+from models.user import User as User
 
-import yourmeals.diaryapp.models as orm
+import diaryapp.models as orm
 
 
 class DataAccessModule:
@@ -17,6 +17,7 @@ class DataAccessModule:
         orm_user = orm.User(
             email=user.email,
             name=user.name,
+            age=user.age,
             weight=user.weight,
             height=user.height,
             gender=user.gender,
@@ -33,12 +34,10 @@ class DataAccessModule:
         return User(
             email=orm_user.email,
             name=orm_user.name,
+            age=orm_user.age,
             weight=orm_user.weight,
             height=orm_user.height,
-            calories=orm_user.calories,
             history=orm_user.history,
-            full_meals=orm_user.full_meals,
-            light_meals=orm_user.light_meals,
             gender=orm_user.gender,
             strategy=orm_user.strategy,
         )

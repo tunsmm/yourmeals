@@ -1,13 +1,23 @@
 from django import forms
 from mongodbforms import DocumentForm, EmbeddedDocumentForm
 
-from .models import Meal, User
+from .models import Meal, User, STRATEGY_CHOICES, GENDER_CHOICES
 
 
 class UserForm(DocumentForm):
     class Meta:
         document = User
         fields = ("email", "name", "full_meals", "light_meals", "weight", "height", "calories", )
+        
+
+class UserForm2(forms.Form):
+    email = forms.EmailField(help_text='yourmail@mail.ru', label=('Электронная почта'), )
+    name = forms.CharField(help_text='Иван Иванов', label=('Имя'), )
+    age = forms.IntegerField()
+    weight = forms.FloatField()
+    height = forms.FloatField()
+    strategy = forms.ChoiceField(choices=STRATEGY_CHOICES)
+    gender = forms.ChoiceField(choices=GENDER_CHOICES)
 
 
 class MealForm(EmbeddedDocumentForm):

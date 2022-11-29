@@ -1,6 +1,6 @@
 import datetime
 
-from yourmeals.models.dish import Dish as Dish
+from models.dish import Dish as Dish
 
 
 class Meal:
@@ -52,9 +52,9 @@ class LightMeal(Meal):
 
 
 def get_meal(self, meal_type: str) -> Meal:
-    if meal_type == 'Light':
+    if meal_type == 'light':
         return LightMeal()
-    elif meal_type == 'Full':
+    elif meal_type == 'full':
         return FullMeal()
     else:
         raise ValueError(f"Неизвестный тип блюда - {meal_type}")

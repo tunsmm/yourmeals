@@ -1,16 +1,17 @@
-from yourmeals.models.meal import Meal as Meal
+from models.meal import Meal as Meal
 
 
 class User:
-    def __init__(self, email: str, name: str, 
+    def __init__(self, email: str, name: str, age: int, 
                  weight: float, height: float, strategy: str, gender: str,
-                 history: list[Meal] = None) -> None:
+                 history: list[Meal] = None, ) -> None:
         self.email = email
         self.name = name
         self.weight = weight
         self.height = height
         self.strategy = strategy
         self.gender = gender
+        self.age = age
         
         if history:
             self.history = history
@@ -47,7 +48,9 @@ class User:
     def set_calories(self):
         gender_factor = self._get_gender_factor(self.gender)
         strategy_factor = self._get_strategy_factor(self.strategy)
-        self.calories = (10 * self.weight + 6.25 * self.height - 4.92 * self.age + gender_factor) * strategy_factor
+        self.calories = round(
+            (10 * self.weight + 6.25 * self.height - 4.92 * self.age + gender_factor) * strategy_factor
+        )
     
     def _get_gender_factor(self, gender: str) -> int:
         if gender == "man":
