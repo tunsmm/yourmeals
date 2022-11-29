@@ -1,8 +1,8 @@
-from yourmeals.data_access.data_access_module import DataAccessModule as DAM
-from yourmeals.models.meal import get_meal
-import yourmeals.models as models
-import yourmeals.utils as utils
-from text2vec import text2vec
+from data_access.data_access_module import DataAccessModule as DAM
+from models.meal import get_meal
+import models as models
+import utils as utils
+from . import text2vec
 
 from operator import attrgetter
 import numpy as np
@@ -16,7 +16,7 @@ class MealPreferencesRecommender:
         self.dam = DAM()
         self.filter = None
         dish_to_recipe = self.dam.get_name_recipes()
-        vectorizer = text2vec(list(dish_to_recipe.values()))
+        vectorizer = text2vec.text2vec(list(dish_to_recipe.values()))
         self.vectors = vectorizer.tfidf_weighted_wv()
         self.vector_to_name = dict(zip(self.vectors, list(dish_to_recipe.keys())))
         self.name_to_vector = dict(zip((dish_to_recipe.keys()), self.vectors))
@@ -28,7 +28,7 @@ class MealPreferencesRecommender:
         history = user.history
         meals = list(filter(self.filter, history))
 
-        if len(meals > 1):
+        if len(meals) > 1:
             main_dishes = [max(meal.dishes, key=attrgetter('calories')) for meal in meals]
             dish_vectors = np.array([self.get_dish_vector(dish) for dish in main_dishes])
             mean = dish_vectors.mean(axis=0)
@@ -50,4 +50,3 @@ class MealPreferencesRecommender:
 
     def get_dish_vector(self, dish: models.dish.Dish):
         return self.name_to_vector[dish.name]
-

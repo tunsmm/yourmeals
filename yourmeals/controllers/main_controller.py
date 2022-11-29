@@ -49,7 +49,7 @@ class MainController:
         meal = user.get_meal(date)
         for str_dish in dishes:
             meal.add_dish(str_dish)
-                    
+
     def delete_dish_on_meal(self, email: str, date, dish_name: str):
         user = self.dam.get_user(email=email)
         meal = user.get_meal(date)

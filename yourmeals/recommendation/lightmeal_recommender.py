@@ -1,5 +1,5 @@
-from yourmeals.recommendation.preferences_recommender import MealPreferencesRecommender
-import yourmeals.models as models
+from recommendation.preferences_recommender import MealPreferencesRecommender
+import models as models
 
 
 class LightMealRecommender(MealPreferencesRecommender):
