@@ -8,7 +8,7 @@ from operator import attrgetter
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
-from functools import lru_cache
+from os.path import exists
 
 
 class MealPreferencesRecommender:
@@ -19,13 +19,16 @@ class MealPreferencesRecommender:
         self.filter = None
         self.dish_to_recipe = self.dam.get_name_recipes()
 
-        self.vectors = self.get_all_vectors()
+        if exists('vectors.npy'):
+            self.vectors = np.load('vectors.npy', allow_pickle=True)
+        else:
+            self.vectors = self.get_all_vectors()
+            np.save('vectors.npy', self.vectors)
         self.vector_index_to_name = dict(zip(range(len(self.vectors)), list(self.dish_to_recipe.keys())))
         self.name_to_index = dict(zip((self.dish_to_recipe.keys()), range(len(self.vectors))))
 
         self.nbrs = NearestNeighbors(n_neighbors=1, algorithm='ball_tree').fit(self.vectors)
 
-    # @lru_cache()
     def get_all_vectors(self):
         vectorizer = text2vec.text2vec(list(self.dish_to_recipe.values()))
         vectors = vectorizer.tfidf_weighted_wv()
