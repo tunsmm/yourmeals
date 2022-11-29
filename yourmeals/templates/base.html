@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta Content-Type: text/javascript; charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}Main page{% endblock %}</title>
+    <title>{% block title %}Главная страница{% endblock %}</title>
     <!-- Load static -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
@@ -19,7 +19,7 @@
     {% include 'nav.html'%}
     <main>
         <div class="container">
-            <h1>{% block header %}Some information{% endblock %}</h1>
+            <h1>{% block header %}Информация ...{% endblock %}</h1>
             {% block content %}
             <!-- Содержимое страницы -->
             {% endblock %}
