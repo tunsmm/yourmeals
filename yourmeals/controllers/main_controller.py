@@ -8,7 +8,7 @@ import utils as utils
 class MainController:
     def __init__(self) -> None:
         self.dam = DAM()
-        # self.recommender = RecommendationController(3)
+        self.recommender = RecommendationController(3)
         
     def create_user(self, email: str, name: str, age: int, weight: float, height: float, strategy: str, gender: str,):
         user = models.user.User(
@@ -74,5 +74,6 @@ class MainController:
         return utils.toJSON(user)
     
     def get_full_meals_recommendation(self, email: str) -> str:
-        rec_list = self.recommender.fullmeal_preferences(email)
+        rec_list = self.recommender.get_full_recommendation(email)
+        print(rec_list)
         return utils.toJSON(rec_list)
