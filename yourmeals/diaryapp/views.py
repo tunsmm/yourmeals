@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from controllers.main_controller import MainController
-from .forms import DishToMealForm, LoginForm, MealForm2, UserForm, UserForm2
+from .forms import DishToMealForm, LoginForm, MealForm, UserForm
 from .models import Dish, User
 
 
@@ -44,7 +44,7 @@ def login(request):
 
 def user_create(request):
     if request.method == 'POST':
-        form = UserForm2(request.POST)
+        form = UserForm(request.POST)
         if form.is_valid():
             MainContr.create_user(
                 email=form.data['email'],
@@ -57,7 +57,7 @@ def user_create(request):
             )
             return HttpResponseRedirect('/')
     else:
-        form = UserForm2
+        form = UserForm
 
     template_name = "user/update_profile.html"
     data = {"form": form}
@@ -80,12 +80,12 @@ def user_profile(request):
 def user_update(request):
     user = json.loads(MainContr.get_user(email=USER_MAIL))
     if request.method == 'POST':
-        form = UserForm2(request.POST, instance=user)
+        form = UserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/user/')
     else:
-        form = UserForm2(instance=user)
+        form = UserForm(instance=user)
     template_name = "user/update_profile.html"
     data = {"form": form}
     return render(request, template_name, data)
@@ -107,12 +107,12 @@ def meal_delete(request, date):
 @authorize
 def meal_create(request):
     if request.method == 'POST':
-        form = MealForm2(request.POST,)
+        form = MealForm(request.POST,)
         if form.is_valid():
             MainContr.add_meal_to_user(USER_MAIL, form.data['meal_type'], form.data['date'])
             return HttpResponseRedirect('/menu/')
     else:
-        form = MealForm2
+        form = MealForm
     template_name = "menu/meal/new.html"
     data = {"form": form}
     return render(request, template_name, data)
