@@ -18,9 +18,5 @@ class MealForm(forms.Form):
     date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
 
 
-class DishToMealForm(forms.Form):
-    name = forms.CharField(help_text='Название блюда', label=('Название блюда'), )
-
-
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Ваша почта', required=True)

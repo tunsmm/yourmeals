@@ -5,8 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from controllers.main_controller import MainController
-from .forms import DishToMealForm, LoginForm, MealForm, UserForm
-from .models import Dish, User
+from .forms import LoginForm, MealForm, UserForm
 
 
 USER_MAIL = None # 'help@mail.ru'  # '6373b29a4b923a1729e4a30a' 
@@ -150,28 +149,6 @@ def dish_to_meal(request, date):
         search_dishes = json.loads(MainContr.get_dishes_names(name))
         data['search_dishes'] = search_dishes
         data['name'] = name
-    else:
-        data['search_dishes'] = []
-        data['name'] = ''
-    template_name = "menu/meal/add_dish.html"
-    return render(request, template_name, data)
-
-
-@authorize
-def dish_to_meal2(request, meal_id):
-    print(request.GET)
-    print(request.GET.keys())
-    data = {}
-    if 'name' in request.GET.keys():
-        name = request.GET['name']
-        dishes = Dish.objects(name__icontains=name)
-        data['search_dishes'] = dishes
-        data['name'] = name
-        if 'dish' in request.GET.keys():
-            print(request.GET['dish'])
-            print(type(request.GET['dish']))
-            selected_dishes = Dish.objects(id__in=[request.GET['dish']])
-            data['selected_diishes'] = selected_dishes
     else:
         data['search_dishes'] = []
         data['name'] = ''
