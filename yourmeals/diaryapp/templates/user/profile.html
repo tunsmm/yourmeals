@@ -2,17 +2,24 @@
 {% block title %}Профиль {{ user.name }}{% endblock %}
 {% block header %}Личная информация{% endblock %}
 {% block content %}
-
     <h3>
         Здравствуйте, {{ user.name }}!
     </h3>
     <p>
         Ваша почта: {{ user.email }}<br>
-        Указанный пол: {{ user.gender }}<br>
+        Указанный пол: 
+        {% if user.gender == 'woman' %} Женщина 
+        {% elif user.gender == 'man' %} Мужчина
+        {% endif %} <br>        
         Указанный вес: {{ user.weight }}<br>
         Указанный рост: {{ user.height }}<br>
         Указанный возраст: {{ user.age }}<br>
-        Указанная стратегия питания: {{ user.strategy }}<br>
+        Указанная стратегия питания: 
+        {% if user.strategy == 'health' %} Поддержание веса 
+        {% elif user.strategy == 'loss' %} Похудение
+        {% elif user.strategy == 'gain' %} Набор веса
+        {% endif %}
+        <br>
     </p>
 
     <h4>

@@ -31,9 +31,9 @@
 
                 <form method="POST">
                     {% csrf_token %}
-                    {% comment %} <input type="hidden" name="date" value="{{ meal_date }}">
+                    <input type="hidden" name="date" value="{{ meal_date }}">
                     <div class="col-md-12 ml-2 p-10">
-                        <label class="form-label"><b>Выбранные блюда:</b></label>
+                        <label class="form-label"><b>Рекомендуемые блюда:</b></label>
                         {% for dish in selected_dishes %}
                         <div class="form-group row mb-2">
                             <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}" checked>
@@ -42,9 +42,9 @@
                             </label>
                         </div>
                         {% empty %}
-                        Пока не выбрано ни одного блюда. 
+                        Пока нет рекомендуемых блюд. 
                         {% endfor %}        
-                    </div> {% endcomment %}
+                    </div>
 
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Найденные блюда:</b></label>
