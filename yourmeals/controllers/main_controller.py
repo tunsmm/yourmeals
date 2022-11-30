@@ -1,5 +1,6 @@
 from data_access.data_access_module import DataAccessModule as DAM
 from models.meal import get_meal
+from controllers.recommendation_controller import RecommendationController
 import models as models
 import utils as utils
 
@@ -7,6 +8,7 @@ import utils as utils
 class MainController:
     def __init__(self) -> None:
         self.dam = DAM()
+        # self.recommender = RecommendationController(3)
         
     def create_user(self, email: str, name: str, age: int, weight: float, height: float, strategy: str, gender: str,):
         user = models.user.User(
@@ -28,38 +30,49 @@ class MainController:
         user.height = height
         user.strategy = strategy
         user.gender = gender
-        self.dam.save_user(user)
+        self.dam.update_user(user)
     
-    def add_meal_to_user(self, email: str, meal_type: str, dishes: list[str], date):
+    def add_meal_to_user(self, email: str, meal_type: str, date, dishes: list[str] = None, ):
         user = self.dam.get_user(email=email)
         meal = get_meal(meal_type)
-        meal.set_date(date)
-        for str_dish in dishes:
-            meal.add_dish(str_dish)
+        meal.date = date
+        # for str_dish in dishes:
+        #     meal.add_dish(str_dish)
         user.add_meal(meal)
-        self.dam.save_user(user)
+        self.dam.update_user(user)
         
     def delete_meal(self, email: str, date):
         user = self.dam.get_user(email=email)
         user.delete_meal(date)
-        self.dam.save_user(user)
+        self.dam.update_user(user)
         
     def add_dish_to_meal(self, email: str, date, dishes: list[str]):
         user = self.dam.get_user(email=email)
         meal = user.get_meal(date)
         for str_dish in dishes:
-            meal.add_dish(str_dish)
-                    
+            dish = self.dam.get_dish(dish_name=str_dish)
+            meal.add_dish(dish)
+        user.set_meal(date, meal)
+        self.dam.update_user(user)
+
     def delete_dish_on_meal(self, email: str, date, dish_name: str):
         user = self.dam.get_user(email=email)
         meal = user.get_meal(date)
-        dish = meal.get_dish(dish_name)
-        del dish
+        meal.delete_dish(dish_name)
+        self.dam.update_user(user)
     
     def get_dish(self, dish_name: str) -> str:
         dish = self.dam.get_dish(dish_name=dish_name)
         return utils.toJSON(dish)
     
+    def get_dishes_names(self, dish_name: str) -> str:
+        dishes = self.dam.get_dishes_names(dish_name=dish_name)
+        return utils.toJSON(dishes)
+    
     def get_user(self, email: str) -> str:
         user = self.dam.get_user(email=email)
         return utils.toJSON(user)
+    
+    def get_full_meals_recommendation(self, email: str) -> str:
+        rec_list = self.recommender.fullmeal_preferences(email)
+        return utils.toJSON(rec_list)
