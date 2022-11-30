@@ -9,7 +9,7 @@ from .forms import DishToMealForm, LoginForm, MealForm2, UserForm, UserForm2
 from .models import Dish, User
 
 
-USER_MAIL = 'help@mail.ru'  # '6373b29a4b923a1729e4a30a' 
+USER_MAIL = None # 'help@mail.ru'  # '6373b29a4b923a1729e4a30a' 
 
 MainContr = MainController()
 
@@ -136,38 +136,19 @@ def dish_to_meal(request, date):
         return HttpResponseRedirect('/menu/')
     data = {}
     data['meal_date'] = date
+    # rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
+    # print(rec_dishes)
+    # data['selected_dishes'] = rec_dishes
     if 'name' in request.GET.keys():
         name = request.GET['name']
         search_dishes = json.loads(MainContr.get_dishes_names(name))
         data['search_dishes'] = search_dishes
-        # rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
-        # data['selected_dishes'] = rec_dishes
         data['name'] = name
     else:
         data['search_dishes'] = []
         data['name'] = ''
     template_name = "menu/meal/add_dish.html"
     return render(request, template_name, data)
-
-
-
-# @authorize
-# def dish_to_meal(request, meal_id):
-#     print(request.GET)
-#     print(request.GET.keys())
-#     form = DishToMealForm(request.GET)
-#     data = {"form": form, }
-#     if 'name' in request.GET.keys():
-#         if form.is_valid():
-#             name = get_name_filter(form.data['name'])
-#             dishes = Dish.objects(name__icontains=name)
-#         else: 
-#             dishes = ['Нет блюд по данным фильтрам']
-#         print(dishes)
-#         data['search_dishes'] = dishes
-#     # elif get_name_filter(None):
-#     template_name = "menu/meal/select_dish.html"
-#     return render(request, template_name, data)
 
 
 @authorize
@@ -188,7 +169,6 @@ def dish_to_meal2(request, meal_id):
     else:
         data['search_dishes'] = []
         data['name'] = ''
-    # elif get_name_filter(None):
     template_name = "menu/meal/add_dish.html"
     return render(request, template_name, data)
 
