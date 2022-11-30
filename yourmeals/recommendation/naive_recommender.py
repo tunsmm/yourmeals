@@ -1,7 +1,7 @@
-from yourmeals.data_access.data_access_module import DataAccessModule as DAM
-from yourmeals.models.meal import get_meal
-import yourmeals.models as models
-import yourmeals.utils as utils
+from data_access.data_access_module import DataAccessModule as DAM
+from models.meal import get_meal
+import models as models
+import utils as utils
 
 from operator import attrgetter
 

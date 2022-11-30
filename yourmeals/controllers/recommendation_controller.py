@@ -1,6 +1,6 @@
-from yourmeals.recommendation.naive_recommender import NaiveRecommender
-from yourmeals.recommendation.fullmeal_recommender import FullMealRecommender
-from yourmeals.recommendation.lightmeal_recommender import LightMealRecommender
+from recommendation.naive_recommender import NaiveRecommender
+from recommendation.fullmeal_recommender import FullMealRecommender
+from recommendation.lightmeal_recommender import LightMealRecommender
 
 
 class RecommendationController:

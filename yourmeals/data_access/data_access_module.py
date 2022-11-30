@@ -60,7 +60,7 @@ class DataAccessModule:
         )
 
     def get_name_recipes(self) -> dict[str, str]:
-        names = Dish.objects.values_list('name')
+        names = orm.Dish.objects.values_list('name')
         recipes = orm.Dish.objects.values_list('recipe')
         recipes = [' '.join(recipe) for recipe in recipes]
         name_recipe_dict = dict(zip(names, recipes))
