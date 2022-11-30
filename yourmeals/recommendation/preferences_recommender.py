@@ -54,9 +54,10 @@ class MealPreferencesRecommender:
             random_samples.append(sample)
         random_samples = np.array(random_samples)
 
-        distances, indices = self.nbrs.kneighbors(random_samples)
+        distances, indices = self.nbrs.kneighbors(random_samples.reshape)
         # nearest_vectors = self.vectors[indices]
-        recommended_dishes = [self.vector_index_to_name[index] for index in indices]
+
+        recommended_dishes = [self.vector_index_to_name[index] for index in indices.flatten()]
         return recommended_dishes
 
     def get_dish_vector(self, dish: models.dish.Dish):
