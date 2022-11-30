@@ -35,10 +35,11 @@ class MealPreferencesRecommender:
         return vectors
 
     def get_recommendation(self, user_email) -> list[str]:
-        np.random.seed(3)
         user = self.dam.get_user(user_email)
         history = user.history
         meals = list(filter(self.filter, history))
+
+        np.random.seed(len(meals))
 
         if len(meals) > 1:
             main_dishes = [max(meal.dishes, key=attrgetter('calories')) for meal in meals]
