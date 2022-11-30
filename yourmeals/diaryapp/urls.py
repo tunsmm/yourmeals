@@ -11,7 +11,6 @@ urlpatterns = [
     path("menu/meal/<str:date>/dish_delete/<str:name>/", views.dish_delete_on_meal, name="dish-delete"),
     
     path("menu/meal/add/<str:date>/", views.dish_to_meal, name="dish-to-meal"),
-    # path("menu/meal/add2/<int:date>/", views.dish_to_meal2, name="dish-to-meal2"),
     
     path("user/", views.user_profile, name="user"),
     path("user/update/", views.user_update, name="user-update"),
