@@ -15,11 +15,11 @@ class RecommendationController:
 
     def get_full_recommendation(self, user_email: str) -> list[str]:
         rec_list = []
-        naive = self.naive.get_recommendation(user_email)
-        if naive:
-            rec_list.append(naive)
+        # naive = self.naive.get_recommendation(user_email)
+        # if naive:
+        #     rec_list.append(naive)
         preferences = self.fullmeal_preferences.get_recommendation(user_email)
-        rec_list.append(*preferences)
+        rec_list += preferences
         return rec_list
 
     def get_light_recommendation(self, user_email: str) -> list[str]:
