@@ -35,6 +35,7 @@ class MealPreferencesRecommender:
         return vectors
 
     def get_recommendation(self, user_email) -> list[str]:
+        np.random.seed(3)
         user = self.dam.get_user(user_email)
         history = user.history
         meals = list(filter(self.filter, history))
