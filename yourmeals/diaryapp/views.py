@@ -130,15 +130,21 @@ def get_name_filter(set_name=None):
 
 @authorize
 def dish_to_meal(request, date):
+    data = {}
     if request.POST:
         selected_dishes = request.POST.getlist('selected_dish')
-        MainContr.add_dish_to_meal(USER_MAIL, date, selected_dishes)
-        return HttpResponseRedirect('/menu/')
-    data = {}
+        try:
+            MainContr.add_dish_to_meal(USER_MAIL, date, selected_dishes)
+        except ValueError as e:
+            data['error'] = e
+        if 'error' not in data.keys():
+            return HttpResponseRedirect('/menu/')
+    
     data['meal_date'] = date
-    # rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
-    # print(rec_dishes)
-    # data['selected_dishes'] = rec_dishes
+    print(USER_MAIL)
+    rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
+    print(rec_dishes)
+    data['selected_dishes'] = rec_dishes
     if 'name' in request.GET.keys():
         name = request.GET['name']
         search_dishes = json.loads(MainContr.get_dishes_names(name))

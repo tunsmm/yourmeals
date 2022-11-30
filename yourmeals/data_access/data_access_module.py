@@ -50,8 +50,8 @@ class DataAccessModule:
         
     def get_user(self, email: str) -> User:
         orm_user = orm.User.objects.get(email=email)
+        history = []
         if orm_user.history:
-            history = []
             for orm_meal in orm_user.history:
                 meal = get_meal(orm_meal.meal_type)
                 meal.date = str(orm_meal.date)
