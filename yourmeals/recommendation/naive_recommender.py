@@ -13,8 +13,9 @@ class NaiveRecommender:
     def get_recommendation(self, user_email):
         user = self.dam.get_user(user_email)
         history = user.history
+        meals = list(filter(lambda meal: len(meal.dishes) > 0, history))
         if len(history) <= 1:
             return None
-        last_meal = max(history, key=attrgetter('date'))
+        last_meal = max(meals, key=attrgetter('date'))
         dish = max(last_meal.dishes, key=attrgetter('calories'))
         return dish.name
