@@ -8,6 +8,7 @@ class Dish:
         self.fats = fats
         self.carbohydrates = carbohydrates
         self.recipe = recipe
+        self.preparing_time = preparing_time
         self.description = description
         self.ingredients = ingredients
         self.portions = portions

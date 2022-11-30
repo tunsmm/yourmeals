@@ -39,11 +39,17 @@ class User:
     def get_meal(self, date):
         for meal in self.history:
             if meal.date == date:
-                return meal 
+                return meal
+            
+    def set_meal(self, date, new_meal: Meal):
+        for meal in self.history:
+            if meal.date == date:
+                meal = new_meal
     
     def delete_meal(self, date):
-        meal = self.get_meal(date)
-        del meal
+        for index, meal in enumerate(self.history):
+            if meal.date == date:
+                del self.history[index]
     
     def set_calories(self):
         gender_factor = self._get_gender_factor(self.gender)

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from controllers.main_controller import MainController
-from .forms import DishToMealForm, LoginForm, MealForm, UserForm, UserForm2
+from .forms import DishToMealForm, LoginForm, MealForm2, UserForm, UserForm2
 from .models import Dish, User
 
 
@@ -86,7 +86,6 @@ def user_update(request):
             return HttpResponseRedirect('/user/')
     else:
         form = UserForm2(instance=user)
-
     template_name = "user/update_profile.html"
     data = {"form": form}
     return render(request, template_name, data)
@@ -95,28 +94,25 @@ def user_update(request):
 @authorize
 def user_menu(request):
     user = json.loads(MainContr.get_user(email=USER_MAIL))
-    return render(request, "menu/main.html", {"meals": user.history})
+    # print(user)
+    return render(request, "menu/main.html", {"meals": user['history']})
 
 
 @authorize
-def meal_delete(request, id):
-    user = json.loads(MainContr.get_user(email=USER_MAIL))
-    del user.meals[id]
-    user.save()
+def meal_delete(request, date):
+    MainContr.delete_meal(email=USER_MAIL, date=date)
     return HttpResponseRedirect('/menu/')
 
 
 @authorize
 def meal_create(request):
-    user = User.objects.get(id=USER_MAIL)
     if request.method == 'POST':
-        form = MealForm(user, request.POST,)
-        if form.is_valid() and request.POST['meal_type'] and request.POST['dishes'] and request.POST['date']:
-            form.save()
+        form = MealForm2(request.POST,)
+        if form.is_valid():
+            MainContr.add_meal_to_user(USER_MAIL, form.data['meal_type'], form.data['date'])
             return HttpResponseRedirect('/menu/')
     else:
-        form = MealForm(parent_document=User, )
-    
+        form = MealForm2
     template_name = "menu/meal/new.html"
     data = {"form": form}
     return render(request, template_name, data)
@@ -133,22 +129,45 @@ def get_name_filter(set_name=None):
 
 
 @authorize
-def dish_to_meal(request, meal_id):
-    print(request.GET)
-    print(request.GET.keys())
-    form = DishToMealForm(request.GET)
-    data = {"form": form, }
+def dish_to_meal(request, date):
+    if request.POST:
+        selected_dishes = request.POST.getlist('selected_dish')
+        MainContr.add_dish_to_meal(USER_MAIL, date, selected_dishes)
+        return HttpResponseRedirect('/menu/')
+    data = {}
+    data['meal_date'] = date
     if 'name' in request.GET.keys():
-        if form.is_valid():
-            name = get_name_filter(form.data['name'])
-            dishes = Dish.objects(name__icontains=name)
-        else: 
-            dishes = ['Нет блюд по данным фильтрам']
-        print(dishes)
-        data['search_dishes'] = dishes
-    # elif get_name_filter(None):
-    template_name = "menu/meal/select_dish.html"
+        name = request.GET['name']
+        search_dishes = json.loads(MainContr.get_dishes_names(name))
+        data['search_dishes'] = search_dishes
+        # rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
+        # data['selected_dishes'] = rec_dishes
+        data['name'] = name
+    else:
+        data['search_dishes'] = []
+        data['name'] = ''
+    template_name = "menu/meal/add_dish.html"
     return render(request, template_name, data)
+
+
+
+# @authorize
+# def dish_to_meal(request, meal_id):
+#     print(request.GET)
+#     print(request.GET.keys())
+#     form = DishToMealForm(request.GET)
+#     data = {"form": form, }
+#     if 'name' in request.GET.keys():
+#         if form.is_valid():
+#             name = get_name_filter(form.data['name'])
+#             dishes = Dish.objects(name__icontains=name)
+#         else: 
+#             dishes = ['Нет блюд по данным фильтрам']
+#         print(dishes)
+#         data['search_dishes'] = dishes
+#     # elif get_name_filter(None):
+#     template_name = "menu/meal/select_dish.html"
+#     return render(request, template_name, data)
 
 
 @authorize
@@ -175,8 +194,14 @@ def dish_to_meal2(request, meal_id):
 
 
 @authorize
-def dish_view(request, id):
-    dish = Dish.objects(id=id)[0]
+def dish_view(request, name):
+    dish = json.loads(MainContr.get_dish(name))
     template_name = "menu/dish.html"
     data = {"dish": dish}
     return render(request, template_name, data)
+
+
+@authorize
+def dish_delete_on_meal(request, date, name):
+    MainContr.delete_dish_on_meal(USER_MAIL, date, name)
+    return HttpResponseRedirect('/menu/')

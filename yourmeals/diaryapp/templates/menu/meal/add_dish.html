@@ -26,33 +26,44 @@
                             Найти блюда
                         </button>
                     </div>
-                    
+                      
+                </form>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {% comment %} <input type="hidden" name="date" value="{{ meal_date }}">
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Выбранные блюда:</b></label>
                         {% for dish in selected_dishes %}
                         <div class="form-group row mb-2">
-                            <input class="form-check-input" type="checkbox" name="dish" value="{{ dish.id }}" id="{{ dish.id }}" checked>
-                            <label class="form-check-label" for="{{ dish.id }}">
+                            <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}" checked>
+                            <label class="form-check-label" for="{{ dish }}">
                                 {{ dish }}
                             </label>
                         </div>
                         {% empty %}
                         Пока не выбрано ни одного блюда. 
                         {% endfor %}        
-                    </div>
+                    </div> {% endcomment %}
 
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Найденные блюда:</b></label>
                         {% for dish in search_dishes %}
                         <div class="form-group row mb-2">
-                            <input class="form-check-input" type="checkbox" name="dish" value="{{ dish.id }}" id="{{ dish.id }}">
-                            <label class="form-check-label" for="{{ dish.id }}">
+                            <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
+                            <label class="form-check-label" for="{{ dish }}">
                                 {{ dish }}
                             </label>
                         </div>
                         {% empty %}
                         Блюд по заданному фильтру не найдено. 
                         {% endfor %}        
+                    </div>
+
+                    <div class="col-md-6 offset-md-4">              
+                        <button type="submit" class="btn btn-primary">
+                            Добавить блюда
+                        </button>
                     </div>
 
                     

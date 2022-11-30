@@ -1,7 +1,9 @@
+import datetime
+
 from django import forms
 from mongodbforms import DocumentForm, EmbeddedDocumentForm
 
-from .models import Meal, User, STRATEGY_CHOICES, GENDER_CHOICES
+from .models import Meal, User, STRATEGY_CHOICES, GENDER_CHOICES, MEAL_TYPE_CHOICES
 
 
 class UserForm(DocumentForm):
@@ -20,14 +22,19 @@ class UserForm2(forms.Form):
     gender = forms.ChoiceField(choices=GENDER_CHOICES)
 
 
-class MealForm(EmbeddedDocumentForm):
-    class Meta:
-        document = Meal
-        embedded_field_name = 'meals'
-        fields = ("meal_type", "dishes", "date", )
-        widgets = {
-            'date': forms.DateInput(),
-        }
+class MealForm2(forms.Form):
+    meal_type = forms.ChoiceField(choices=MEAL_TYPE_CHOICES)
+    date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
+
+
+# class MealForm(EmbeddedDocumentForm):
+#     class Meta:
+#         document = Meal
+#         embedded_field_name = 'meals'
+#         fields = ("meal_type", "dishes", "date", )
+#         widgets = {
+#             'date': forms.DateInput(),
+#         }
 
 
 class DishToMealForm(forms.Form):

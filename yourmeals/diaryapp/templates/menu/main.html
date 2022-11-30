@@ -7,16 +7,16 @@
     {% for meal in meals %}
         
         <h4>
-            {% if meal.meal_type == 'Light' %} Перекус 
-            {% elif meal.meal_type == 'Full' %} Полноценный прием пищи
+            {% if meal.meal_type == 'light' %} Перекус 
+            {% elif meal.meal_type == 'full' %} Полноценный прием пищи
             {% endif %} за {{ meal.date }} 
-            <a href="{% url 'dish-to-meal' forloop.counter0  %}" class="btn btn-warning btn-sm" >Добавить блюдо</a>
-            <a href="{% url 'meal-delete' forloop.counter0 %}" class="btn btn-danger btn-sm" >Удалить</a>
+            <a href="{% url 'dish-to-meal' meal.date  %}" class="btn btn-warning btn-sm" >Добавить блюдо</a>
+            <a href="{% url 'meal-delete' meal.date %}" class="btn btn-danger btn-sm" >Удалить</a>
         </h4>
         
         {% for dish in meal.dishes %}
         <p>
-            <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'user' %}" class="p-2 text-sm text-danger" >Удалить</a>
+            <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'dish-delete' meal.date dish.name %}" class="p-2 text-sm text-danger" >Удалить</a>
         </p> 
         {% endfor %}
         <hr>
