@@ -38,7 +38,6 @@ class MealPreferencesRecommender:
         user = self.dam.get_user(user_email)
         history = user.history
         meals = list(filter(self.filter, history))
-
         np.random.seed(len(meals))
 
         if len(meals) > 1:
