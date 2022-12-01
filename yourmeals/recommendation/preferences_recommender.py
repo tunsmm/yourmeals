@@ -12,9 +12,7 @@ from os.path import exists
 
 
 class MealPreferencesRecommender:
-    def __init__(self, n_recommendations: int):
-        self.n_recommendations = n_recommendations
-
+    def __init__(self):
         self.dam = DAM()
         self.filter = None
         self.dish_to_recipe = self.dam.get_name_recipes()
@@ -34,29 +32,28 @@ class MealPreferencesRecommender:
         vectors = vectorizer.tfidf_weighted_wv()
         return vectors
 
-    def get_recommendation(self, user_email) -> list[str]:
+    def get_recommendation(self, user_email, n_recommendations) -> list[str]:
         user = self.dam.get_user(user_email)
         history = user.history
         meals = list(filter(self.filter, history))
-        np.random.seed(len(meals))
+        np.random.seed(len(meals) + hash(user_email) % 10000)
 
         if len(meals) > 1:
             main_dishes = [max(meal.dishes, key=attrgetter('calories')) for meal in meals]
             dish_vectors = np.array([self.vectors[self.get_dish_vector(dish)] for dish in main_dishes])
             mean = dish_vectors.mean(axis=0)
-            std = dish_vectors.mean(axis=0)
+            std = dish_vectors.std(axis=0)
         else:
             mean = self.vectors.mean(axis=0)
             std = self.vectors.std(axis=0)
 
         random_samples = []
-        for i in range(self.n_recommendations):
-            sample = mean + np.random.normal(0, std * 2, size=(300,)).astype('float32')
+        for i in range(n_recommendations):
+            sample = mean + np.random.normal(0, std * 3, size=(300,)).astype('float32')
             random_samples.append(sample)
         random_samples = np.array(random_samples)
 
         distances, indices = self.nbrs.kneighbors(random_samples)
-
         recommended_dishes = [self.vector_index_to_name[index] for index in indices.flatten()]
         return recommended_dishes
 
