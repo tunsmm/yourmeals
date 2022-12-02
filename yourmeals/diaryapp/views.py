@@ -3,6 +3,7 @@ import json
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from mongoengine.errors import DoesNotExist, NotUniqueError
 
 from controllers.main_controller import MainController
 from .forms import LoginForm, MealForm, UserForm
@@ -28,38 +29,46 @@ def set_user(id: str) -> None:
 
 
 def login(request):
+    data = {}
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.data['email']
-            set_user(email)
-            return HttpResponseRedirect('/user/')
-
+            try:
+                MainContr.get_user(email=email)
+                set_user(email)
+                return HttpResponseRedirect('/user/')
+            except DoesNotExist:
+                data["error"] = "Пользователя с данным логином не существует"
+            
     template_name = "user/login.html"
     form = LoginForm()
-    data = {"form": form}
+    data["form"] = form
     return render(request, template_name, data)
 
 
 def user_create(request):
+    data = {}
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
-            MainContr.create_user(
-                email=form.data['email'],
-                name=form.data['name'],
-                age=int(form.data['age']),
-                weight=float(form.data['weight']),
-                height=float(form.data['height']),
-                gender=form.data['gender'],
-                strategy=form.data['strategy'],
-            )
-            return HttpResponseRedirect('/')
+            try:
+                MainContr.create_user(
+                    email=form.data['email'],
+                    name=form.data['name'],
+                    age=int(form.data['age']),
+                    weight=float(form.data['weight']),
+                    height=float(form.data['height']),
+                    gender=form.data['gender'],
+                    strategy=form.data['strategy'],
+                )
+                return HttpResponseRedirect('/')
+            except NotUniqueError:
+                data["error"] = "Пользователь с указанной почтой уже существует."
     else:
         form = UserForm
-
     template_name = "user/update_profile.html"
-    data = {"form": form}
+    data["form"] = form
     return render(request, template_name, data)
 
 
