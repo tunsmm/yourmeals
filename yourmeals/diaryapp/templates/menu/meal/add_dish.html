@@ -10,7 +10,13 @@
         <div class="card">
             <div class="card-header">Добавление блюда</div>
             <div class="card-body">
-                {{ error }}
+
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error|escape }}
+                    </div>
+                {% endif %}
+
                 <form method="GET" action=".">
                     
                     <div class="form-group row">
@@ -35,7 +41,7 @@
                     <input type="hidden" name="date" value="{{ meal_date }}">
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Рекомендуемые блюда:</b></label>
-                        {% for dish in selected_dishes %}
+                        {% for dish in rec_dishes %}
                         <div class="form-group row mb-2">
                             <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
                             <label class="form-check-label" for="{{ dish }}">
