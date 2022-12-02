@@ -28,9 +28,9 @@ class Meal:
     
     def add_dish(self, dish: Dish):
         sum_calories = self.sum_calories()
-        if sum_calories + dish.calories > 5000:
+        if sum_calories + dish.calories > 3000:
             raise ValueError(
-                f"В приеме пищи не может быть больше 5000 калорий. \
+                f"В приеме пищи не может быть больше 3000 калорий. \
                 Сейчас калорий -{sum_calories}, в добавляемом блюде - {dish.calories}"
             )
         self.dishes.append(dish)
