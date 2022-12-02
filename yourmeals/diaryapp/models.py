@@ -1,9 +1,18 @@
 import datetime
+import os
 
+from dotenv import load_dotenv
 import mongoengine
 
+# load local environment
+load_dotenv()
 
-mongoengine.connect(db="yourmeals", host="localhost", port=27017, alias="mydb-alias")
+DB = os.getenv("DB")
+HOST = os.getenv("HOST")
+PORT = int(os.getenv("PORT"))
+ALIAS = os.getenv("ALIAS")
+
+mongoengine.connect(db=DB, host=HOST, port=PORT, alias=ALIAS)
 
 MEAL_TYPE_CHOICES = [
     ('light', 'Перекус'),
@@ -39,7 +48,7 @@ class Dish(mongoengine.Document):
     # Meta information
     meta = {
         "db_alias": "mydb-alias", 
-        "collection": "dishes2",
+        "collection": "dishes",
         "ordering": ["name"],
     }
     
