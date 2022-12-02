@@ -140,10 +140,8 @@ def dish_to_meal(request, date):
             return HttpResponseRedirect('/menu/')
     
     data['meal_date'] = date
-    print(USER_MAIL)
     rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
-    print(rec_dishes)
-    data['selected_dishes'] = rec_dishes
+    data['rec_dishes'] = rec_dishes
     if 'name' in request.GET.keys():
         name = request.GET['name']
         search_dishes = json.loads(MainContr.get_dishes_names(name))

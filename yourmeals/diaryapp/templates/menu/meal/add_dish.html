@@ -37,7 +37,7 @@
                         <label class="form-label"><b>Рекомендуемые блюда:</b></label>
                         {% for dish in selected_dishes %}
                         <div class="form-group row mb-2">
-                            <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}" checked>
+                            <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
                             <label class="form-check-label" for="{{ dish }}">
                                 {{ dish }}
                             </label>
