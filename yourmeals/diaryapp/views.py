@@ -9,7 +9,7 @@ from controllers.main_controller import MainController
 from .forms import LoginForm, MealForm, UserForm
 
 
-USER_MAIL = None # 'help@mail.ru'  # '6373b29a4b923a1729e4a30a' 
+USER_MAIL = None
 
 MainContr = MainController()
 
@@ -26,6 +26,12 @@ def authorize(f):
 def set_user(id: str) -> None:
     global USER_MAIL
     USER_MAIL = id
+    
+
+def logout(request) -> None:
+    global USER_MAIL
+    USER_MAIL = None
+    return HttpResponseRedirect('/login/')
 
 
 def login(request):
