@@ -1,10 +1,10 @@
 from django.utils.dateparse import parse_datetime
 
-from models.dish import Dish as Dish
-from models.meal import get_type, get_meal
-from models.user import User as User
+from yourmeals.models.dish import Dish as Dish
+from yourmeals.models.meal import get_type, get_meal
+from yourmeals.models.user import User as User
 
-import diaryapp.models as orm
+from yourmeals.diaryapp import models as orm
 
 
 class DataAccessModule:
