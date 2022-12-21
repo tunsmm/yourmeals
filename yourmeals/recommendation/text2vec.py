@@ -10,7 +10,7 @@ import math
 # text2vec methods
 class text2vec():
     def __init__(self, doc_list):
-        #Initialize
+        # Initialize
         self.doc_list = doc_list
         self.nlp, self.docs, self.docs_dict = self._preprocess(self.doc_list)
     
@@ -120,7 +120,7 @@ class text2vec():
         return docs_vecs
 
 
-#Similarity Calculation methods
+# Similarity Calculation methods
 class simical():
     def __init__(self, vec1, vec2):
         self.vec1 = vec1
