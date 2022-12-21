@@ -73,7 +73,7 @@ def user_create(request):
                 data["error"] = "Пользователь с указанной почтой уже существует."
     else:
         form = UserForm
-    template_name = "user/update_profile.html"
+    template_name = "user/new.html"
     data["form"] = form
     return render(request, template_name, data)
 
