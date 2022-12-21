@@ -1,8 +1,8 @@
-from data_access.data_access_module import DataAccessModule as DAM
-from models.meal import get_meal
-from controllers.recommendation_controller import RecommendationController
-import models as models
-import utils as utils
+from yourmeals.data_access.data_access_module import DataAccessModule as DAM
+from yourmeals.models.meal import get_meal
+from yourmeals.controllers.recommendation_controller import RecommendationController
+import yourmeals.models as models
+import yourmeals.utils as utils
 
 
 class Singleton(type):

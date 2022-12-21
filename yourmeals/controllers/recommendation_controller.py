@@ -1,18 +1,18 @@
-from recommendation.naive_recommender import NaiveRecommender
-from recommendation.fullmeal_recommender import FullMealRecommender
-from recommendation.lightmeal_recommender import LightMealRecommender
-from recommendation.preferences_recommender import MealPreferencesRecommender
+from yourmeals.recommendation.naive_recommender import NaiveRecommender
+from yourmeals.recommendation.preferences_proxy import MealPreferencesRecommenderProxy
+
+from yourmeals.utils import Singleton
 
 
-class RecommendationController:
+class RecommendationController(metaclass=Singleton):
 
     def __init__(self, n_recommendations: int) -> None:
         if n_recommendations < 2:
             raise ValueError(f"Minimal recommendation number is 2, provided {n_recommendations}.")
 
         self.naive = NaiveRecommender()
-        self.fullmeal_preferences = FullMealRecommender()
-        self.lightmeal_preferences = LightMealRecommender()
+        self.fullmeal_preferences = MealPreferencesRecommenderProxy('full')
+        self.lightmeal_preferences = MealPreferencesRecommenderProxy('light')
         self.n_recommendations = n_recommendations
 
     def get_full_recommendation(self, user_email: str) -> list[str]:
@@ -23,7 +23,7 @@ class RecommendationController:
         rec_list = self.get_recommendation(user_email, self.lightmeal_preferences)
         return rec_list
 
-    def get_recommendation(self, user_email, recommender: MealPreferencesRecommender):
+    def get_recommendation(self, user_email, recommender: MealPreferencesRecommenderProxy):
         rec_list = []
         naive = self.naive.get_recommendation(user_email)
         if naive:

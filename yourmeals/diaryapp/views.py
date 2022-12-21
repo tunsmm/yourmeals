@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from mongoengine.errors import DoesNotExist, NotUniqueError
 
-from controllers.main_controller import MainController
+from yourmeals.controllers.main_controller import MainController
 from .forms import LoginForm, MealForm, UserForm
 
 
