@@ -27,8 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'yourmeals.diaryapp',
-    
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
