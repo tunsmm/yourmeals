@@ -14,6 +14,11 @@ class Dish:
         self.portions = portions
         self.tags = tags
         self.img_src = img_src
+        
+        self.calories_on_portion = self.calculate_on_portion(self.calories)
+        
+    def calculate_on_portion(self, value):
+        return value // self.portions
     
     def __eq__(self, __o: object) -> bool:
         if not isinstance(__o, Dish):

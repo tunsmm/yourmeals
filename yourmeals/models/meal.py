@@ -23,15 +23,16 @@ class Meal:
             if dish.name == dish_name:
                 del self.dishes[index]
     
+    @property
     def sum_calories(self): 
-        return sum(d.calories for d in self.dishes)
+        return sum(dish.calories_on_portion for dish in self.dishes)
     
     def add_dish(self, dish: Dish):
-        sum_calories = self.sum_calories()
-        if sum_calories + dish.calories > 3000:
+        sum_calories = self.sum_calories
+        if sum_calories + dish.calories_on_portion > 3000:
             raise ValueError(
                 f"В приеме пищи не может быть больше 3000 калорий. \
-                Сейчас калорий -{sum_calories}, в добавляемом блюде - {dish.calories}"
+                Сейчас калорий -{sum_calories}, в добавляемом блюде - {dish.calories_on_portion}"
             )
         self.dishes.append(dish)
 
@@ -48,11 +49,11 @@ class LightMeal(Meal):
         self.meal_type = 'light'
 
     def add_dish(self, dish: Dish):
-        sum_calories = self.sum_calories()
-        if sum_calories + dish.calories > 500:
+        sum_calories = self.sum_calories
+        if sum_calories + dish.calories_on_portion > 500:
             raise ValueError(
                 f"В перекусе не может быть больше 500 калорий. \
-                Сейчас калорий: {sum_calories}, в добавляемом блюде: {dish.calories}"
+                Сейчас калорий: {sum_calories}, в добавляемом блюде: {dish.calories_on_portion}"
             )
         self.dishes.append(dish)
 
