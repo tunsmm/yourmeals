@@ -20,7 +20,7 @@ class Singleton(type):
 
 def numpy_cache(func: Callable):
     def wrapper(*args):
-        filename = f'cache/{func.__name__}.npy'
+        filename = f'yourmeals/cache/{func.__name__}.npy'
         if exists(filename):
             result = np.load(filename, allow_pickle=True)
         else:
