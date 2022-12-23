@@ -1,5 +1,4 @@
 from yourmeals.data_access.data_access_module import DataAccessModule as DAM
-from yourmeals.models.meal import get_meal
 import yourmeals.models as models
 import yourmeals.utils as utils
 from . import text2vec
