@@ -32,7 +32,7 @@ class Meal:
         if sum_calories + dish.calories_on_portion > 3000:
             raise ValueError(
                 f"В приеме пищи не может быть больше 3000 калорий. \
-                Сейчас калорий -{sum_calories}, в добавляемом блюде - {dish.calories_on_portion}"
+                Сейчас калорий: {sum_calories}, в добавляемом блюде - {dish.calories_on_portion}"
             )
         self.dishes.append(dish)
 
