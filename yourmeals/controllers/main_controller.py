@@ -84,5 +84,4 @@ class MainController(metaclass=Singleton):
     
     def get_full_meals_recommendation(self, email: str) -> str:
         rec_list = self.recommender.get_full_recommendation(email)
-        print(rec_list)
         return utils.toJSON(rec_list)
