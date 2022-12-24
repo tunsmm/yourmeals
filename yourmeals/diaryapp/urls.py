@@ -11,6 +11,7 @@ urlpatterns = [
     path("menu/meal/<str:date>/dish_delete/<str:name>/", views.dish_delete_on_meal, name="dish-delete"),
     
     path("menu/meal/add/<str:date>/", views.dish_to_meal, name="dish-to-meal"),
+    path("menu/search/", views.get_dishes_by_name, name="dishes-by-name"),
     
     path("user/", views.user_profile, name="user"),
     path("user/update/", views.user_update, name="user-update"),

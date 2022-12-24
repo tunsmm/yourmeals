@@ -1,10 +1,63 @@
 {% extends "base.html" %}
+
 {% block title %}Меню{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let btn = document.getElementById("search-dishes");
+        btn.addEventListener('click', async function(event) {
+            event.preventDefault();
+            let name = document.querySelector("input[name=name]").value;
+            let response = await fetch(`/menu/search/?name=${name}`);
+            response.json().then(function(dishes) {
+                var search_dishes = dishes;
+                console.log(dishes);
+                console.log(search_dishes);
+
+                let sd_block = document.getElementById("search-dishes-block");
+                sd_block.innerHTML = null;
+
+                let div = document.createElement("div");
+                div.textContent = "";
+                if (typeof dishes != "undefined" && dishes != null && dishes.length != null && dishes.length > 0) {
+                    // array exists and is not empty    
+                    var strd = ``;
+                    dishes.map( function(dish) {
+                        strd += `
+                            <div class="form-group row mb-2">
+                                <input class="form-check-input" type="checkbox" name="selected_dish" value="${dish}" id="${dish}">
+                                <label class="form-check-label" for="${dish}">
+                                    ${dish}
+                                </label>
+                            </div>
+                        `;
+                    })
+                    div.innerHTML = strd;
+                }
+                else {
+                    div.innerHTML = `
+                    <div class="form-group row mb-2">
+                        <label class="form-check-label">
+                            Блюд по заданному фильтру не найдено. 
+                        </label>
+                    </div>
+                    `;
+                }
+                sd_block.append(div);
+            });
+        })
+    })
+
+</script>
+
+{% endblock %}
+
 {% block header %}Меню{% endblock %}
+
 {% block content %}
 
-<p>
-</p>
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
@@ -29,7 +82,7 @@
                     </div>
                     
                     <div class="col-md-6 offset-md-4">              
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" id="search-dishes">
                             Найти блюда
                         </button>
                     </div>
@@ -55,20 +108,22 @@
 
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Найденные блюда:</b></label>
-                        {% for dish in search_dishes %}
-                        <div class="form-group row mb-2">
-                            <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
-                            <label class="form-check-label" for="{{ dish }}">
-                                {{ dish }}
-                            </label>
+                        <div id="search-dishes-block">
+                            {% for dish in search_dishes %}
+                            <div class="form-group row mb-2">
+                                <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
+                                <label class="form-check-label" for="{{ dish }}">
+                                    {{ dish }}
+                                </label>
+                            </div>
+                            {% empty %}
+                            Блюд по заданному фильтру не найдено. 
+                            {% endfor %}        
                         </div>
-                        {% empty %}
-                        Блюд по заданному фильтру не найдено. 
-                        {% endfor %}        
                     </div>
 
                     <div class="col-md-6 offset-md-4">              
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" name="add-dishes">
                             Добавить блюда
                         </button>
                     </div>
