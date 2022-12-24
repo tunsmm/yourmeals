@@ -1,37 +1,67 @@
 from functools import wraps
+import base64
+import hashlib
+import hmac
 import json
+import os
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from mongoengine.errors import DoesNotExist, NotUniqueError
+from dotenv import load_dotenv
+from mongoengine.errors import NotUniqueError
 
 from yourmeals.controllers.main_controller import MainController
 from .forms import LoginForm, MealForm, UserForm
 
 
-USER_MAIL = None
+load_dotenv()
+
+SECRET_USERMAIL_SALT = os.getenv("SECRET_USERMAIL_SALT")
 
 MainContr = MainController()
 
 
+def sign_data(data: str):
+    """
+    Return signed data
+    """
+    return hmac.new(
+        SECRET_USERMAIL_SALT.encode(),
+        msg=data.encode(),
+        digestmod=hashlib.sha256
+    ).hexdigest().upper()
+
+
+def get_email_from_signed_data(signed_data: str):
+    email, sign = signed_data.split(".")
+    email = base64.b64decode(email.encode()).decode()
+    valid_sign = sign_data(email)
+    if hmac.compare_digest(valid_sign, sign):
+        return email
+
+
+def read_usermail_cookies(request):
+    email_cookie = request.COOKIES.get('email', None)
+    if not email_cookie:
+        return None
+    valid_email = get_email_from_signed_data(email_cookie)
+    return valid_email
+
+
 def authorize(f):
     @wraps(f)
-    def decorated_function(*args, **kws):
-        if USER_MAIL is None: 
+    def decorated_function(request, *args, **kws):
+        USER_MAIL = read_usermail_cookies(request)
+        if USER_MAIL is None or not MainContr.get_user(USER_MAIL): 
             return HttpResponseRedirect('/login/')
-        return f(*args, **kws)  
+        return f(request, *args, **kws)  
     return decorated_function
 
 
-def set_user(id: str) -> None:
-    global USER_MAIL
-    USER_MAIL = id
-    
-
 def logout(request) -> None:
-    global USER_MAIL
-    USER_MAIL = None
-    return HttpResponseRedirect('/login/')
+    response = HttpResponseRedirect('/login/')
+    response.delete_cookie('email')
+    return response
 
 
 def login(request):
@@ -40,12 +70,19 @@ def login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.data['email']
-            try:
-                MainContr.get_user(email=email)
-                set_user(email)
-                return HttpResponseRedirect('/user/')
-            except DoesNotExist:
-                data["error"] = "Пользователя с данным логином не существует"
+            user = json.loads(MainContr.get_user(email=email))
+            if user:
+                response = HttpResponseRedirect('/user/')
+                email_signed = base64.b64encode(
+                    email.encode()
+                ).decode() + '.' + sign_data(email)
+                response.set_cookie(
+                    key='email',
+                    value=email_signed,
+                    max_age=2000,
+                )
+                return response
+            data["error"] = "Пользователя с данным логином не существует"
             
     template_name = "user/login.html"
     form = LoginForm()
@@ -85,14 +122,16 @@ def main(request):
 
 @authorize
 def user_profile(request):
-    user = json.loads(MainContr.get_user(email=USER_MAIL))
+    user = read_usermail_cookies(request)
+    user = json.loads(MainContr.get_user(email=user))
     data = {"user": user}
     return render(request, "user/profile.html", data)
 
 
 @authorize
 def user_update(request):
-    user = json.loads(MainContr.get_user(email=USER_MAIL))
+    user = read_usermail_cookies(request)
+    user = json.loads(MainContr.get_user(email=user))
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
@@ -107,23 +146,25 @@ def user_update(request):
 
 @authorize
 def user_menu(request):
-    user = json.loads(MainContr.get_user(email=USER_MAIL))
-    # print(user)
+    user = read_usermail_cookies(request)
+    user = json.loads(MainContr.get_user(email=user))
     return render(request, "menu/main.html", {"meals": user['history']})
 
 
 @authorize
-def meal_delete(request, date):
-    MainContr.delete_meal(email=USER_MAIL, date=date)
+def meal_delete(request, user, date):
+    user = read_usermail_cookies(request)
+    MainContr.delete_meal(email=user, date=date)
     return HttpResponseRedirect('/menu/')
 
 
 @authorize
 def meal_create(request):
+    user = read_usermail_cookies(request)
     if request.method == 'POST':
         form = MealForm(request.POST,)
         if form.is_valid():
-            MainContr.add_meal_to_user(USER_MAIL, form.data['meal_type'], form.data['date'])
+            MainContr.add_meal_to_user(user, form.data['meal_type'], form.data['date'])
             return HttpResponseRedirect('/menu/')
     else:
         form = MealForm
@@ -132,39 +173,31 @@ def meal_create(request):
     return render(request, template_name, data)
 
 
-NAME_FILTER = ''
-
-
-def get_name_filter(set_name=None):
-    global NAME_FILTER
-    if set_name and NAME_FILTER != set_name:
-        NAME_FILTER = set_name
-    return NAME_FILTER
+@authorize
+def get_dishes_by_name(request):
+    if request.GET['name']:
+        name = request.GET['name']
+        data = MainContr.get_dishes_names(name)
+        return JsonResponse(json.loads(data), safe=False)
+    return JsonResponse({"answer": None})
 
 
 @authorize
-def dish_to_meal(request, date):
+def dish_to_meal(request, date=None):
+    user = read_usermail_cookies(request)
     data = {}
     if request.POST:
         selected_dishes = request.POST.getlist('selected_dish')
         try:
-            MainContr.add_dish_to_meal(USER_MAIL, date, selected_dishes)
+            MainContr.add_dish_to_meal(user, date, selected_dishes)
         except ValueError as e:
             data['error'] = e
         if 'error' not in data.keys():
             return HttpResponseRedirect('/menu/')
     
     data['meal_date'] = date
-    rec_dishes = json.loads(MainContr.get_full_meals_recommendation(USER_MAIL))
+    rec_dishes = json.loads(MainContr.get_full_meals_recommendation(user))
     data['rec_dishes'] = rec_dishes
-    if 'name' in request.GET.keys():
-        name = request.GET['name']
-        search_dishes = json.loads(MainContr.get_dishes_names(name))
-        data['search_dishes'] = search_dishes
-        data['name'] = name
-    else:
-        data['search_dishes'] = []
-        data['name'] = ''
     template_name = "menu/meal/add_dish.html"
     return render(request, template_name, data)
 
@@ -178,6 +211,7 @@ def dish_view(request, name):
 
 
 @authorize
-def dish_delete_on_meal(request, date, name):
-    MainContr.delete_dish_on_meal(USER_MAIL, date, name)
+def dish_delete_on_meal(request, date=None, name=None):
+    user = read_usermail_cookies(request)
+    MainContr.delete_dish_on_meal(user, date, name)
     return HttpResponseRedirect('/menu/')
