@@ -4,7 +4,7 @@ import requests
 from pymongo import MongoClient
 from envparse import Env
 
-from parser import all_dishes_by_page, dish_full_content_parser
+from dish_parser import all_dishes_by_page, dish_full_content_parser
 
 
 env = Env()
