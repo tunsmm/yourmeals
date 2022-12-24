@@ -1,4 +1,5 @@
 from django.utils.dateparse import parse_datetime
+from mongoengine.errors import DoesNotExist
 
 from yourmeals.models.dish import Dish as Dish
 from yourmeals.models.meal import get_type, get_meal
@@ -49,7 +50,10 @@ class DataAccessModule:
         orm_user.save()
         
     def get_user(self, email: str) -> User:
-        orm_user = orm.User.objects.get(email=email)
+        try:
+            orm_user = orm.User.objects.get(email=email)
+        except DoesNotExist:
+            return None
         history = []
         if orm_user.history:
             for orm_meal in orm_user.history:
