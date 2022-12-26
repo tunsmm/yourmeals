@@ -1,3 +1,5 @@
+import datetime
+
 from yourmeals.models.meal import Meal as Meal
 
 
@@ -13,10 +15,7 @@ class User:
         self.gender = gender
         self.age = age
         
-        if history:
-            self.history = history
-        else: 
-            self.history = []
+        self.history = {}
         
         self.light_meals = 2
         if self.strategy == "health":
@@ -29,29 +28,37 @@ class User:
         self.set_calories()
 
     def add_meal(self, meal: Meal):
-        meals_per_day = sum(m.date == meal.date for m in self.history)
-        if meals_per_day >= (self.full_meals + self.light_meals):
+        meal_type = meal.meal_type
+        if meal_type == 'light':
+            limit = self.light_meals
+        elif meal_type == 'full':
+            limit = self.full_meals
+        else:
+            raise ValueError(f"Unexpected type {meal_type}")
+            
+        meals_per_day = sum(meal_type == m.meal_type for m in self.history.setdefault(str(meal.date), []))
+        if meals_per_day >= limit:
             raise ValueError(
-                f"Попытка превысить количество приемов пищи в день. Сейчас - {meals_per_day}, максимум - 10."
+                f"Вы превышаете максимальное количество приемов пищи в день."
             )
-        self.history.append(meal)
+        self.history[str(meal.date)].append(meal)
     
-    def get_meal(self, date):
-        for meal in self.history:
-            if meal.date == date:
+    def get_meal(self, date: datetime.date, time: datetime.time) -> Meal:
+        for meal in self.history[str(date)]:
+            if meal.time == time:
                 return meal
             
-    def set_meal(self, date, new_meal: Meal):
-        for meal in self.history:
-            if meal.date == date:
+    def set_meal(self, date: datetime.date, time: datetime.time, new_meal: Meal) -> None:
+        for meal in self.history[str(date)]:
+            if meal.time == time:
                 meal = new_meal
     
-    def delete_meal(self, date):
-        for index, meal in enumerate(self.history):
-            if meal.date == date:
-                del self.history[index]
+    def delete_meal(self, date: datetime.date, time: datetime.time) -> None:
+        for index, meal in enumerate(self.history[str(date)]):
+            if meal.time == time:
+                del self.history[str(date)][index]
     
-    def set_calories(self):
+    def set_calories(self) -> None:
         gender_factor = self._get_gender_factor(self.gender)
         strategy_factor = self._get_strategy_factor(self.strategy)
         self.calories = round(
