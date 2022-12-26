@@ -59,8 +59,6 @@ class Dish(mongoengine.Document):
 class Meal(mongoengine.EmbeddedDocument):
     global MEAL_TYPE_CHOICES
     meal_type = mongoengine.StringField(choices=MEAL_TYPE_CHOICES)
-    # dishes = mongoengine.ListField(mongoengine.ReferenceField(Dish))
-    # dishes = mongoengine.ListField(mongoengine.StringField())
     dishes = mongoengine.ListField()
     date = mongoengine.DateTimeField(default=datetime.datetime.now)
     
