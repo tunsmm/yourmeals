@@ -4,14 +4,17 @@ from yourmeals.models.dish import Dish as Dish
 
 
 class Meal:
-    def __init__(self, dishes: list[Dish] = None, date=datetime.datetime.now) -> None:
+    def __init__(self, dishes: list[Dish] = None, date=datetime.datetime.now().date(), time=datetime.datetime.now().time()) -> None:
         if not dishes:
             dishes = []
         self.dishes = dishes
         self.date = date
+        self.time = time
+        self.sum_calories = self.calculate_sum_calories()
+        self.limit_calories = 3000
     
     def __str__(self):
-        return f"Прием пищи за {str(self.date)}"
+        return f"Прием пищи за {str(self.date)} {str(self.time)}"
     
     def get_dish(self, dish: str) -> Dish:
         for dish in self.dishes:
@@ -23,39 +26,32 @@ class Meal:
             if dish.name == dish_name:
                 del self.dishes[index]
     
-    @property
-    def sum_calories(self): 
-        return sum(dish.calories_on_portion for dish in self.dishes)
+    def calculate_sum_calories(self) -> int: 
+        res = sum(dish.calories_on_portion for dish in self.dishes)
+        return res
     
-    def add_dish(self, dish: Dish):
-        sum_calories = self.sum_calories
-        if sum_calories + dish.calories_on_portion > 3000:
+    def add_dish(self, dish: Dish) -> None:
+        if self.sum_calories + dish.calories_on_portion > self.limit_calories:
             raise ValueError(
-                f"В приеме пищи не может быть больше 3000 калорий. \
-                Сейчас калорий: {sum_calories}, в добавляемом блюде - {dish.calories_on_portion}"
+                f"В приеме пищи не может быть больше {self.limit_calories} калорий. \
+                Сейчас калорий: {self.sum_calories}, в добавляемом блюде - {dish.calories_on_portion}"
             )
         self.dishes.append(dish)
+        self.sum_calories += dish.calories_on_portion
 
 
 class FullMeal(Meal):
     def __init__(self, dishes: list[Dish] = None, date=datetime.datetime.now) -> None:
         super().__init__(dishes, date)
         self.meal_type = 'full'
+        self.limit_calories = 1500
 
 
 class LightMeal(Meal):
     def __init__(self, dishes: list[Dish] = None, date=datetime.datetime.now) -> None:
         super().__init__(dishes, date)
         self.meal_type = 'light'
-
-    def add_dish(self, dish: Dish):
-        sum_calories = self.sum_calories
-        if sum_calories + dish.calories_on_portion > 500:
-            raise ValueError(
-                f"В перекусе не может быть больше 500 калорий. \
-                Сейчас калорий: {sum_calories}, в добавляемом блюде: {dish.calories_on_portion}"
-            )
-        self.dishes.append(dish)
+        self.limit_calories = 500
 
 
 def get_meal(meal_type: str) -> Meal:
