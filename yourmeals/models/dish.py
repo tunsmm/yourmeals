@@ -17,7 +17,7 @@ class Dish:
         
         self.calories_on_portion = self.calculate_on_portion(self.calories)
         
-    def calculate_on_portion(self, value):
+    def calculate_on_portion(self, value) -> int:
         return value // self.portions
     
     def __eq__(self, __o: object) -> bool:
