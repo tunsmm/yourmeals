@@ -19,7 +19,7 @@ class MealPreferencesRecommender:
 
         self.nbrs = NearestNeighbors(n_neighbors=1, algorithm='ball_tree').fit(self.vectors)
 
-    @utils.numpy_cache
+    @utils.dishes_cache
     def get_all_vectors(self):
         vectorizer = text2vec.text2vec(list(self.dish_to_recipe.values()))
         vectors = vectorizer.tfidf_weighted_wv()
@@ -50,7 +50,7 @@ class MealPreferencesRecommender:
         return random_samples
 
     def get_recommendation(self, user_email, n_recommendations) -> list[str]:
-        user = self.dam.get_user(user_email)
+        user = self.dam.get_user(user_email, add_history=True)
         history = user.history
         meals = self.filter_meals(history)
         np.random.seed(len(meals) + hash(user_email) % 10000)
