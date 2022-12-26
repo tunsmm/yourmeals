@@ -3,21 +3,26 @@
 {% block header %}Меню{% endblock %}
 {% block content %}
 
-    <a href="{% url 'meal-new' %}" class="btn btn-success" >Добавить прием пищи</a>
-    {% for meal in meals %}
-        
+    <a href="{% url 'meal-new' %}" class="btn btn-success" >Добавить прием пищи</a> <br>
+    {% for key, meals in history.items %}
         <h4>
-            {% if meal.meal_type == 'light' %} Перекус 
-            {% elif meal.meal_type == 'full' %} Полноценный прием пищи
-            {% endif %} за {{ meal.date }} 
-            <a href="{% url 'dish-to-meal' meal.date  %}" class="btn btn-warning btn-sm" >Добавить блюдо</a>
-            <a href="{% url 'meal-delete' meal.date %}" class="btn btn-danger btn-sm" >Удалить</a>
+            {{ key }} 
         </h4>
-        
-        {% for dish in meal.dishes %}
-        <p>
-            <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'dish-delete' meal.date dish.name %}" class="p-2 text-sm text-danger" >Удалить</a>
-        </p> 
+        {% for meal in meals %}
+            <h5>
+                {% if meal.meal_type == 'light' %} Перекус 
+                {% elif meal.meal_type == 'full' %} Полноценный прием пищи
+                {% endif %} в {{ meal.time.hour }}:{{ meal.time.minute }}
+                <span class="badge rounded-pill bg-light text-dark" >{{ meal.sum_calories }} калорий</span>
+                <a href="{% url 'dish-to-meal' meal.date meal.time  %}" class="btn btn-warning btn-sm" >Добавить блюдо</a>
+                <a href="{% url 'meal-delete' meal.date meal.time %}" class="btn btn-danger btn-sm" >Удалить</a>
+            </h5>
+            
+            {% for dish in meal.dishes %}
+            <p>
+                <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'dish-delete' meal.date meal.time dish.name %}" class="p-2 text-sm text-danger" >Удалить</a>
+            </p> 
+            {% endfor %}
         {% endfor %}
         <hr>
     {% endfor %}

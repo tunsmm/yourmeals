@@ -147,14 +147,16 @@ def user_update(request):
 @authorize
 def user_menu(request):
     user = read_usermail_cookies(request)
-    user = json.loads(MainContr.get_user(email=user))
-    return render(request, "menu/main.html", {"meals": user['history']})
+    user = json.loads(MainContr.get_user_history(email=user))
+    return render(request, "menu/main.html", {"history": user['history']})
 
 
 @authorize
-def meal_delete(request, user, date):
+def meal_delete(request, date, time): 
     user = read_usermail_cookies(request)
-    MainContr.delete_meal(email=user, date=date)
+    date = json.loads(date.replace("'", '"'))
+    time = json.loads(time.replace("'", '"'))
+    MainContr.delete_meal(email=user, date=date, time=time)
     return HttpResponseRedirect('/menu/')
 
 
@@ -164,7 +166,7 @@ def meal_create(request):
     if request.method == 'POST':
         form = MealForm(request.POST,)
         if form.is_valid():
-            MainContr.add_meal_to_user(user, form.data['meal_type'], form.data['date'])
+            MainContr.add_meal_to_user(user, form.cleaned_data['meal_type'], form.cleaned_data['date'])
             return HttpResponseRedirect('/menu/')
     else:
         form = MealForm
@@ -183,19 +185,22 @@ def get_dishes_by_name(request):
 
 
 @authorize
-def dish_to_meal(request, date=None):
+def dish_to_meal(request, date=None, time=None):
     user = read_usermail_cookies(request)
     data = {}
     if request.POST:
         selected_dishes = request.POST.getlist('selected_dish')
         try:
-            MainContr.add_dish_to_meal(user, date, selected_dishes)
+            date = json.loads(date.replace("'", '"'))
+            time = json.loads(time.replace("'", '"'))
+            MainContr.add_dish_to_meal(user, date, time, selected_dishes)
         except ValueError as e:
             data['error'] = e
         if 'error' not in data.keys():
             return HttpResponseRedirect('/menu/')
     
     data['meal_date'] = date
+    data['meal_time'] = time
     rec_dishes = json.loads(MainContr.get_full_meals_recommendation(user))
     data['rec_dishes'] = rec_dishes
     template_name = "menu/meal/add_dish.html"
@@ -211,7 +216,9 @@ def dish_view(request, name):
 
 
 @authorize
-def dish_delete_on_meal(request, date=None, name=None):
+def dish_delete_on_meal(request, date=None, time=None, name=None):
+    date = json.loads(date.replace("'", '"'))
+    time = json.loads(time.replace("'", '"'))
     user = read_usermail_cookies(request)
-    MainContr.delete_dish_on_meal(user, date, name)
+    MainContr.delete_dish_on_meal(user, date, time, name)
     return HttpResponseRedirect('/menu/')

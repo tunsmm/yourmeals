@@ -29,7 +29,7 @@
                             <div class="form-group row mb-2">
                                 <input class="form-check-input" type="checkbox" name="selected_dish" value="${dish}" id="${dish}">
                                 <label class="form-check-label" for="${dish}">
-                                    ${dish}
+                                    <a href="menu/dish?name='${dish}'." class="p-2 text-sm text-secondary" >${dish}</a>
                                 </label>
                             </div>
                         `;
@@ -40,7 +40,7 @@
                     div.innerHTML = `
                     <div class="form-group row mb-2">
                         <label class="form-check-label">
-                            Блюд по заданному фильтру не найдено. 
+                            Блюд по заданным фильтрам не найдено. 
                         </label>
                     </div>
                     `;
@@ -92,13 +92,14 @@
                 <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="date" value="{{ meal_date }}">
+                    <input type="hidden" name="time" value="{{ meal_time }}">
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Рекомендуемые блюда:</b></label>
                         {% for dish in rec_dishes %}
                         <div class="form-group row mb-2">
                             <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
                             <label class="form-check-label" for="{{ dish }}">
-                                {{ dish }}
+                                <a href="{% url 'dish-view' dish %}" class="p-2 text-sm text-secondary" >{{ dish }}</a>
                             </label>
                         </div>
                         {% empty %}
@@ -109,16 +110,7 @@
                     <div class="col-md-12 ml-2 p-10">
                         <label class="form-label"><b>Найденные блюда:</b></label>
                         <div id="search-dishes-block">
-                            {% for dish in search_dishes %}
-                            <div class="form-group row mb-2">
-                                <input class="form-check-input" type="checkbox" name="selected_dish" value="{{ dish }}" id="{{ dish }}">
-                                <label class="form-check-label" for="{{ dish }}">
-                                    {{ dish }}
-                                </label>
-                            </div>
-                            {% empty %}
-                            Блюд по заданному фильтру не найдено. 
-                            {% endfor %}        
+                            Блюд по заданным фильтрам не найдено. 
                         </div>
                     </div>
 
