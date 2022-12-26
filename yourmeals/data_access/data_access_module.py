@@ -1,11 +1,12 @@
-from django.utils.dateparse import parse_datetime
+from itertools import chain
+import datetime
+
 from mongoengine.errors import DoesNotExist
 
+from yourmeals.diaryapp import models as orm
 from yourmeals.models.dish import Dish as Dish
 from yourmeals.models.meal import get_type, get_meal
 from yourmeals.models.user import User as User
-
-from yourmeals.diaryapp import models as orm
 
 
 class DataAccessModule:
@@ -26,15 +27,6 @@ class DataAccessModule:
         orm_user.save()
     
     def update_user(self, user: User):
-        meals = []
-        for meal in user.history:
-            date = parse_datetime(meal.date)
-            dishes = [dish.name for dish in meal.dishes]
-            meals.append(orm.Meal(
-                meal_type=get_type(meal),
-                date=date,
-                dishes=dishes,
-            ))
         orm_user = orm.User.objects.get(email=user.email)
         orm_user.email = user.email
         orm_user.name = user.name
@@ -46,32 +38,46 @@ class DataAccessModule:
         orm_user.full_meals = user.full_meals
         orm_user.light_meals = user.light_meals
         orm_user.calories = user.calories
+        
+        meals = []
+        for meal in chain(*user.history.values()):
+            # print(type(meal))
+            # print(meal)
+            # print(meal.__dict__)
+            dishes = [dish.name for dish in meal.dishes]
+            date_time = datetime.datetime.combine(meal.date, meal.time)
+            meals.append(orm.Meal(
+                meal_type=get_type(meal),
+                date=date_time,
+                dishes=dishes,
+            ))
         orm_user.history = meals
+        
         orm_user.save()
         
-    def get_user(self, email: str) -> User:
+    def get_user(self, email: str, add_history: bool = False) -> User:
         try:
             orm_user = orm.User.objects.get(email=email)
         except DoesNotExist:
             return None
-        history = []
-        if orm_user.history:
-            for orm_meal in orm_user.history:
-                meal = get_meal(orm_meal.meal_type)
-                meal.date = str(orm_meal.date)
-                for str_dish in orm_meal.dishes:
-                    meal.dishes.append(self.get_dish(str_dish))
-                history.append(meal)
-        return User(
+        user = User(
             email=orm_user.email,
             name=orm_user.name,
             age=orm_user.age,
             weight=orm_user.weight,
             height=orm_user.height,
-            history=history,
             gender=orm_user.gender,
             strategy=orm_user.strategy,
         )
+        if add_history and orm_user.history:
+            for orm_meal in orm_user.history:
+                meal = get_meal(orm_meal.meal_type)
+                meal.date = orm_meal.date.date()
+                meal.time = orm_meal.date.time()
+                for dish_name in orm_meal.dishes:
+                    meal.add_dish(self.get_dish(dish_name))
+                user.add_meal(meal)
+        return user
 
     def get_dishes_names(self, dish_name: str) -> list[str]:
         orm_dishes = orm.Dish.objects(name__icontains=dish_name)
@@ -97,6 +103,7 @@ class DataAccessModule:
             img_src=orm_dish.img_src,
         )
 
+    # Fix. Concatenate in one function
     def get_name_recipes(self) -> dict[str, str]:
         names = orm.Dish.objects.values_list('name')
         recipes = orm.Dish.objects.values_list('recipe')
