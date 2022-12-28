@@ -41,9 +41,6 @@ class DataAccessModule:
         
         meals = []
         for meal in chain(*user.history.values()):
-            # print(type(meal))
-            # print(meal)
-            # print(meal.__dict__)
             dishes = [dish.name for dish in meal.dishes]
             date_time = datetime.datetime.combine(meal.date, meal.time)
             meals.append(orm.Meal(
@@ -87,7 +84,7 @@ class DataAccessModule:
         ]
 
     def get_dish(self, dish_name: str) -> Dish:
-        orm_dish = orm.Dish.objects(name__icontains=dish_name)[0]
+        orm_dish = orm.Dish.objects(name__contains=dish_name)[0]
         return Dish(
             name=orm_dish.name,
             calories=orm_dish.calories,
