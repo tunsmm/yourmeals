@@ -1,18 +1,19 @@
+from operator import attrgetter
+
+from sklearn.neighbors import NearestNeighbors
+import numpy as np
+
+from . import text2vec
 from yourmeals.data_access.data_access_module import DataAccessModule as DAM
 import yourmeals.models as models
 import yourmeals.utils as utils
-from . import text2vec
-
-from operator import attrgetter
-import numpy as np
-from sklearn.neighbors import NearestNeighbors
 
 
 class MealPreferencesRecommender:
     def __init__(self):
         self.dam = DAM()
-        self.dish_to_recipe = self.dam.get_name_recipes()
-        self.vectors = self.get_all_vectors()
+        self.dish_to_recipe = self.dam.get_name_recipes() # Return all dishes
+        self.vectors = self.get_all_vectors() # All dishes to vectors
 
         self.vector_index_to_name = dict(zip(range(len(self.vectors)), list(self.dish_to_recipe.keys())))
         self.name_to_index = dict(zip((self.dish_to_recipe.keys()), range(len(self.vectors))))

@@ -1,19 +1,18 @@
 import math
 
-
-from gensim.corpora import Dictionary
-from gensim.models.tfidfmodel import TfidfModel
 from gensim import models
+from gensim.corpora import Dictionary
 from gensim.matutils import sparse2full
+from gensim.models.tfidfmodel import TfidfModel
+from tqdm import tqdm
 import numpy as np
 import spacy
-from tqdm import tqdm
+
 
 
 # text2vec methods
 class text2vec():
     def __init__(self, doc_list):
-        # Initialize
         self.doc_list = doc_list
         self.nlp, self.docs, self.docs_dict = self._preprocess(self.doc_list)
     
