@@ -15,8 +15,8 @@ ALIAS = os.getenv("ALIAS")
 mongoengine.connect(db=DB, host=HOST, port=PORT, alias=ALIAS)
 
 MEAL_TYPE_CHOICES = [
-    ('light', 'Перекус'),
     ('full', 'Полноценный'),
+    ('light', 'Перекус'),
 ]
 
 GENDER_CHOICES = [
