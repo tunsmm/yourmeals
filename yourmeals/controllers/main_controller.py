@@ -7,19 +7,10 @@ import yourmeals.models as models
 import yourmeals.utils as utils
 
 
-class Singleton(type):
-    _instances = {}
-    
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-    
-
-class MainController(metaclass=Singleton):
+class MainController(metaclass=utils.Singleton):
     def __init__(self) -> None:
         self.dam = DAM()
-        self.recommender = RecommendationController(3)
+        self.recommender = RecommendationController(4)
         
     def create_user(self, email: str, name: str, age: int, weight: float, height: float, strategy: str, gender: str,):
         user = models.user.User(
@@ -61,8 +52,7 @@ class MainController(metaclass=Singleton):
         
     def add_dish_to_meal(self, email: str, date: dict, time: dict, dishes: list[str]):
         user = self.dam.get_user(email=email, add_history=True)
-        date = utils.dict_to_date(date)
-        time = utils.dict_to_time(time)
+        date, time = utils.convert_dicts_to_date_time(date, time)
         meal = user.get_meal(date, time)
         for dish_name in dishes:
             dish = self.dam.get_dish(dish_name=dish_name)
@@ -72,10 +62,8 @@ class MainController(metaclass=Singleton):
 
     def delete_dish_on_meal(self, email: str, date: dict, time: dict, dish_name: str):
         user = self.dam.get_user(email=email, add_history=True)
-        meal = user.get_meal(
-            utils.dict_to_date(date),
-            utils.dict_to_time(time)
-        )
+        date, time = utils.convert_dicts_to_date_time(date, time)
+        meal = user.get_meal(date, time)
         meal.delete_dish(dish_name)
         self.dam.update_user(user)
     
@@ -97,4 +85,8 @@ class MainController(metaclass=Singleton):
     
     def get_full_meals_recommendation(self, email: str) -> str:
         rec_list = self.recommender.get_full_recommendation(email)
+        return utils.toJSON(rec_list)
+    
+    def get_light_meals_recommendation(self, email: str) -> str:
+        rec_list = self.recommender.get_light_recommendation(email)
         return utils.toJSON(rec_list)
