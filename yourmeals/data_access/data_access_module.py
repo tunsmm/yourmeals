@@ -27,16 +27,15 @@ class DataAccessModule:
     
     def update_user(self, user: User):
         orm_user = orm.User.objects.get(email=user.email)
-        orm_user.email = user.email
-        orm_user.name = user.name
-        orm_user.age = user.age
-        orm_user.weight = user.weight
-        orm_user.height = user.height
-        orm_user.gender = user.gender
-        orm_user.strategy = user.strategy
-        orm_user.full_meals = user.full_meals
-        orm_user.light_meals = user.light_meals
-        orm_user.calories = user.calories
+        # orm_user.name = user.name
+        # orm_user.age = user.age
+        # orm_user.weight = user.weight
+        # orm_user.height = user.height
+        # orm_user.gender = user.gender
+        # orm_user.strategy = user.strategy
+        # orm_user.full_meals = user.full_meals
+        # orm_user.light_meals = user.light_meals
+        # orm_user.calories = user.calories
         
         meals = []
         for meal in chain(*user.history.values()):
@@ -48,7 +47,6 @@ class DataAccessModule:
                 dishes=dishes,
             ))
         orm_user.history = meals
-        
         orm_user.save()
         
     def get_user(self, email: str, add_history: bool = False) -> User:
