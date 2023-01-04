@@ -22,7 +22,6 @@ class DataAccessModule:
             full_meals=user.full_meals,
             light_meals=user.light_meals,
             calories=user.calories,
-            history=user.history,
         )
         orm_user.save()
     
