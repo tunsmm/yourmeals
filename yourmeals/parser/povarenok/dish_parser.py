@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup as bs
 
-from parser.utils import norm_text
+from utils import norm_text
+# from parser.utils import norm_text
 
 
 def all_dishes_by_page(page: int) -> list:
@@ -65,11 +66,11 @@ def dish_full_content_parser(href: str) -> dict:
 
     tags = parser.find_all("span", itemprop="recipeCategory")
     if tags:
-        dish_info['tags'] = norm_text(tags[0].text)
+        dish_info['tags'] = [norm_text(tags[0].text)]
     else:
         tags = parser.find("div", class_="article-breadcrumbs")
         if tags:
-            dish_info['tags'] = norm_text(tags.p.span.a.text)
+            dish_info['tags'] = [norm_text(tags.p.span.a.text)]
         else:
             # Not normal, check results
             print('No tags for: ', DISH_URL)
@@ -139,3 +140,16 @@ def dish_full_content_parser(href: str) -> dict:
         dish_info['recipe'] = 'Нет рецепта'
     
     return dish_info
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+    dish_info = dish_full_content_parser('https://www.povarenok.ru/recipes/show/141324/')
+    
+    from pymongo import MongoClient
+    from envparse import Env
+    env = Env()
+    MONGODB_URL = env.str("MONGODB_URL", default="mongodb://localhost:27017/yourmeals")
+    client = MongoClient(MONGODB_URL)
+    mongo_client = client["yourmeals"]
+    mongo_client.dishes3.insert_one(dish_info)
