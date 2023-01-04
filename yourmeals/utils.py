@@ -6,6 +6,13 @@ import json
 import numpy as np
 
 
+def convert_dicts_to_date_time(date_dict: dict, time_dict: dict) -> tuple[datetime.date, datetime.date]:
+    return (
+        dict_to_date(date_dict=date_dict), 
+        dict_to_time(time_dict=time_dict)
+    )
+
+
 def dict_to_date(date_dict: dict) -> datetime.date:
     return datetime.date(
         year=date_dict['year'],
@@ -50,7 +57,7 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-def dishes_cache(func: Callable):
+def numpy_cache(func: Callable):
     def wrapper(*args):
         filename = f'yourmeals/cache/{func.__name__}.npy'
         if os.path.exists(filename):
