@@ -1,10 +1,13 @@
-import spacy
+import math
+
+
 from gensim.corpora import Dictionary
 from gensim.models.tfidfmodel import TfidfModel
 from gensim import models
 from gensim.matutils import sparse2full
 import numpy as np
-import math
+import spacy
+from tqdm import tqdm
 
 
 # text2vec methods
@@ -38,7 +41,9 @@ class text2vec():
         # Load spacy model
         nlp = spacy.load('ru_core_news_lg')
         # lemmatise docs
-        docs = [self._lemmatize_doc(nlp(doc)) for doc in doc_list] 
+        docs = []
+        for doc in tqdm(doc_list):
+            docs.append(self._lemmatize_doc(nlp(doc)))
         # Get docs dictionary
         docs_dict = self._get_docs_dict(docs)
         return nlp, docs, docs_dict
