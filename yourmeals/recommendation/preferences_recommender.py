@@ -19,7 +19,7 @@ class MealPreferencesRecommender:
 
         self.nbrs = NearestNeighbors(n_neighbors=1, algorithm='ball_tree').fit(self.vectors)
 
-    @utils.dishes_cache
+    @utils.numpy_cache
     def get_all_vectors(self):
         vectorizer = text2vec.text2vec(list(self.dish_to_recipe.values()))
         vectors = vectorizer.tfidf_weighted_wv()
