@@ -79,7 +79,7 @@ def login(request):
                 response.set_cookie(
                     key='email',
                     value=email_signed,
-                    max_age=2000,
+                    max_age=2 * 24 * 60 * 60,  # age of the cookie in seconds
                 )
                 return response
             data["error"] = "Пользователя с данным логином не существует"
@@ -201,7 +201,7 @@ def dish_to_meal(request, date=None, time=None):
     
     data['meal_date'] = date
     data['meal_time'] = time
-    rec_dishes = json.loads(MainContr.get_full_meals_recommendation(user))
+    rec_dishes = json.loads(MainContr.get_full_meals_recommendation(user))  # separate to full and light types
     data['rec_dishes'] = rec_dishes
     template_name = "menu/meal/add_dish.html"
     return render(request, template_name, data)
