@@ -7,6 +7,7 @@ from yourmeals.diaryapp import models as orm
 from yourmeals.models.dish import Dish as Dish
 from yourmeals.models.meal import get_type, get_meal
 from yourmeals.models.user import User as User
+from yourmeals import utils
 
 
 class DataAccessModule:
@@ -81,7 +82,7 @@ class DataAccessModule:
         ]
 
     def get_dish(self, dish_name: str) -> Dish:
-        orm_dish = orm.Dish.objects(name__contains=dish_name)[0]
+        orm_dish = orm.Dish.objects.get(name=dish_name)
         return Dish(
             name=orm_dish.name,
             calories=orm_dish.calories,
@@ -97,7 +98,7 @@ class DataAccessModule:
             img_src=orm_dish.img_src,
         )
 
-    # Fix. Concatenate in one function
+    @utils.cache
     def get_name_recipes(self) -> dict[str, str]:
         names = orm.Dish.objects.values_list('name')
         recipes = orm.Dish.objects.values_list('recipe')
