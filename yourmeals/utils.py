@@ -1,7 +1,8 @@
 from typing import Callable
 import datetime
-import os
 import json
+import pickle
+import os
 
 import numpy as np
 
@@ -44,7 +45,7 @@ def json_default(obj):
         return obj.__dict__
 
 
-def toJSON(self):
+def toJSON(self) -> str:
     return json.dumps(self, default=lambda o: json_default(o), indent=4)
 
 
@@ -58,6 +59,8 @@ class Singleton(type):
 
 
 def numpy_cache(func: Callable):
+    """Decorator to create some cache via npy format
+    """
     def wrapper(*args):
         filename = f'yourmeals/cache/{func.__name__}.npy'
         if os.path.exists(filename):
@@ -65,5 +68,21 @@ def numpy_cache(func: Callable):
         else:
             result = func(*args)
             np.save(filename, result)
+        return result
+    return wrapper
+
+
+def cache(func: Callable):
+    """Decorator to create some cache via pickle
+    """
+    def wrapper(*args):
+        filename = f'yourmeals/cache/{func.__name__}.pickle'
+        if os.path.exists(filename):
+            with open(filename, 'rb') as fp:
+                result = pickle.load(fp)
+        else:
+            result = func(*args)
+            with open(filename, 'wb') as fp:
+                pickle.dump(result, fp)
         return result
     return wrapper
