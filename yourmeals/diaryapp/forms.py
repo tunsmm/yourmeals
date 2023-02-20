@@ -5,7 +5,7 @@ from .models import STRATEGY_CHOICES, GENDER_CHOICES, MEAL_TYPE_CHOICES
 
 class UserForm(forms.Form):
     email = forms.EmailField(help_text='yourmail@mail.ru', label=('Электронная почта'), )
-    name = forms.CharField(help_text='Иван Иванов', label=('Имя'), )
+    name = forms.CharField(help_text='Иван Иванов', label=('Имя'), min_length=2, max_length=100 )
     age = forms.IntegerField(label=('Возраст'), min_value=1, max_value=200)
     weight = forms.FloatField(label=('Вес'), min_value=1, max_value=500)
     height = forms.FloatField(label=('Рост'), min_value=1, max_value=300)
