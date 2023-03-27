@@ -16,9 +16,9 @@ class Meal:
     def __str__(self):
         return f"Прием пищи за {str(self.date)} {str(self.time)}"
     
-    def get_dish(self, dish: str) -> Dish:
+    def get_dish(self, dish_name: str) -> Dish:
         for dish in self.dishes:
-            if dish.name == dish:
+            if dish.name == dish_name:
                 return dish
     
     def delete_dish(self, dish_name: str) -> None:
@@ -27,8 +27,7 @@ class Meal:
                 del self.dishes[index]
     
     def calculate_sum_calories(self) -> int: 
-        res = sum(dish.calories_on_portion for dish in self.dishes)
-        return res
+        return sum(dish.calories_on_portion for dish in self.dishes)
     
     def add_dish(self, dish: Dish) -> None:
         if self.sum_calories + dish.calories_on_portion > self.limit_calories:

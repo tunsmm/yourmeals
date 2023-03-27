@@ -49,9 +49,9 @@ class User:
                 return meal
             
     def set_meal(self, date: datetime.date, time: datetime.time, new_meal: Meal) -> None:
-        for meal in self.history[str(date)]:
+        for i, meal in enumerate(self.history[str(date)]):
             if meal.time == time:
-                meal = new_meal
+                self.history[str(date)] = new_meal
     
     def delete_meal(self, date: datetime.date, time: datetime.time) -> None:
         for index, meal in enumerate(self.history[str(date)]):

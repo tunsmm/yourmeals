@@ -7,12 +7,23 @@ import mongoengine
 # load local environment
 load_dotenv()
 
-DB = os.getenv("DB")
-HOST = os.getenv("HOST")
-PORT = int(os.getenv("PORT"))
-ALIAS = os.getenv("ALIAS")
+# DB = os.getenv("DB")
+# HOST = os.getenv("HOST")
+# PORT = int(os.getenv("PORT"))
+# USERNAME = os.getenv("DB_USERNAME")
+# PASSWORD = os.getenv("DB_PASSWORD")
+# ALIAS = os.getenv("ALIAS")
 
-mongoengine.connect(db=DB, host=HOST, port=PORT, alias=ALIAS)
+# mongoengine.connect(
+#     db=DB, 
+#     host=HOST, 
+#     port=PORT, 
+#     alias=ALIAS, 
+#     username=USERNAME,
+#     password=PASSWORD,
+# )
+
+mongoengine.connect(db="yourmeals", host="localhost", port=27017, alias="mydb-alias")
 
 MEAL_TYPE_CHOICES = [
     ('full', 'Полноценный'),
