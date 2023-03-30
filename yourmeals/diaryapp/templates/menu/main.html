@@ -20,7 +20,7 @@
             
             {% for dish in meal.dishes %}
             <p>
-                <b>{{ dish.name }}</b>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'dish-delete' meal.date meal.time dish.name %}" class="p-2 text-sm text-danger" >Удалить</a>
+                <b>{{ dish.name }}</b> <a>{{ dish.calories_on_portion }} к.</a>  <a href="{% url 'dish-view' dish.name %}" class="p-2 text-sm text-secondary" >Просмотреть</a> <a href="{% url 'dish-delete' meal.date meal.time dish.name %}" class="p-2 text-sm text-danger" >Удалить</a>
             </p> 
             {% endfor %}
         {% endfor %}
