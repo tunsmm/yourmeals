@@ -1,3 +1,2 @@
 from django.test import TestCase
-
-# Create your tests here.
+from ..data_access.model import Dish, Meal, User

@@ -1,9 +1,8 @@
 import datetime
 
 from yourmeals.data_access.data_access_module import DataAccessModule as DAM
-from yourmeals.models.meal import get_meal
 from yourmeals.controllers.recommendation_controller import RecommendationController
-import yourmeals.models as models
+import yourmeals.data_access.model as models
 import yourmeals.utils as utils
 
 
@@ -36,7 +35,7 @@ class MainController(metaclass=utils.Singleton):
     
     def add_meal_to_user(self, email: str, meal_type: str, date: datetime.datetime, ):
         user = self.dam.get_user(email=email, add_history=True)
-        meal = get_meal(meal_type)
+        meal = models.meal.get_meal(meal_type)
         meal.date = date.date()
         meal.time = date.time()
         user.add_meal(meal)

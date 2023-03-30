@@ -3,10 +3,12 @@ import datetime
 
 from mongoengine.errors import DoesNotExist
 
-from yourmeals.diaryapp import models as orm
-from yourmeals.models.dish import Dish as Dish
-from yourmeals.models.meal import get_type, get_meal
-from yourmeals.models.user import User as User
+# from yourmeals.diaryapp import models as orm
+# import yourmeals.diaryapp.models as orm
+from . import models as orm
+from .model.dish import Dish as Dish
+from .model.meal import get_type, get_meal
+from .model.user import User as User
 from yourmeals import utils
 
 

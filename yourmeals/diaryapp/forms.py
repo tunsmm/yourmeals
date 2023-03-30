@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import STRATEGY_CHOICES, GENDER_CHOICES, MEAL_TYPE_CHOICES
+from ..data_access.choices import STRATEGY_CHOICES, GENDER_CHOICES, MEAL_TYPE_CHOICES
   
 
 class UserForm(forms.Form):

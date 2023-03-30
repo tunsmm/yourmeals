@@ -1,5 +1,5 @@
 from yourmeals.recommendation.preferences_recommender import MealPreferencesRecommender
-import yourmeals.models as models
+import yourmeals.data_access.model as models
 
 
 class FullMealRecommender(MealPreferencesRecommender):

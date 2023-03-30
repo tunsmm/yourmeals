@@ -5,7 +5,7 @@ import numpy as np
 
 from . import text2vec
 from yourmeals.data_access.data_access_module import DataAccessModule as DAM
-import yourmeals.models as models
+import yourmeals.data_access.model as models
 import yourmeals.utils as utils
 
 
