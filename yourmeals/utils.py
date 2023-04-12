@@ -77,10 +77,13 @@ def cache(func: Callable):
     """
     def wrapper(*args):
         filename = f'yourmeals/cache/{func.__name__}.pickle'
+
         if os.path.exists(filename):
+            print(f"Loading cache for '{func.__name__}'")
             with open(filename, 'rb') as fp:
                 result = pickle.load(fp)
         else:
+            print(f"Saving cache for '{func.__name__}'")
             result = func(*args)
             with open(filename, 'wb') as fp:
                 pickle.dump(result, fp)
