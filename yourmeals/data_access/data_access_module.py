@@ -10,6 +10,7 @@ from .model.dish import Dish as Dish
 from .model.meal import get_type, get_meal
 from .model.user import User as User
 from yourmeals import utils
+from yourmeals.exceptions.does_not_exist import DishDoesNotExistError, UserDoesNotExistError
 
 
 class DataAccessModule:
@@ -40,23 +41,26 @@ class DataAccessModule:
         # orm_user.light_meals = user.light_meals
         # orm_user.calories = user.calories
         
-        meals = []
-        for meal in chain(*user.history.values()):
+        new_meals = []
+        old_meals = chain(*user.history.values())
+        for meal in old_meals:
             dishes = [dish.name for dish in meal.dishes]
             date_time = datetime.datetime.combine(meal.date, meal.time)
-            meals.append(orm.Meal(
+            new_meal = orm.Meal(
                 meal_type=get_type(meal),
                 date=date_time,
                 dishes=dishes,
-            ))
-        orm_user.history = meals
+            )
+            new_meals.append(new_meal)
+        orm_user.history = new_meals
         orm_user.save()
         
     def get_user(self, email: str, add_history: bool = False) -> User:
         try:
             orm_user = orm.User.objects.get(email=email)
         except DoesNotExist:
-            return None
+            raise UserDoesNotExistError
+        
         user = User(
             email=orm_user.email,
             name=orm_user.name,

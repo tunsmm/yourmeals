@@ -2,6 +2,7 @@ import datetime
 
 from yourmeals.data_access.data_access_module import DataAccessModule as DAM
 from yourmeals.controllers.recommendation_controller import RecommendationController
+from yourmeals.exceptions.does_not_exist import DishDoesNotExistError, UserDoesNotExistError
 import yourmeals.data_access.model as models
 import yourmeals.utils as utils
 
@@ -75,8 +76,19 @@ class MainController(metaclass=utils.Singleton):
         return utils.toJSON(dishes)
     
     def get_user(self, email: str) -> str:
-        user = self.dam.get_user(email=email)
-        return utils.toJSON(user)
+        try:
+            user = self.dam.get_user(email=email)
+            response = user  # Make it with code status and else...
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+        return utils.toJSON(response)
     
     def get_user_history(self, email: str) -> str:
         user = self.dam.get_user(email=email, add_history=True)
