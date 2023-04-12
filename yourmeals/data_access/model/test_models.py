@@ -1,9 +1,10 @@
+# pytest ./yourmeals/data_access/model/test_models.py
 from datetime import datetime, time, date
 
 import pytest
 
 from .dish import Dish
-from .meal import Meal, get_meal
+from .meal import Meal
 from .user import User
 
 
