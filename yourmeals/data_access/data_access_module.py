@@ -70,6 +70,7 @@ class DataAccessModule:
             gender=orm_user.gender,
             strategy=orm_user.strategy,
         )
+
         if add_history and orm_user.history:
             for orm_meal in orm_user.history:
                 meal = get_meal(orm_meal.meal_type)
@@ -78,18 +79,20 @@ class DataAccessModule:
                 for dish_name in orm_meal.dishes:
                     meal.add_dish(self.get_dish(dish_name))
                 user.add_meal(meal)
+            user = self._reverse_user_history(user)
+        return user
+    
+    def _reverse_user_history(self, user: User):
+        user.history = {k: v for k, v in sorted(user.history.items(), reverse=True)}
         return user
 
-    def get_dishes_names(self, dish_name: str) -> list[str]:
-        orm_dishes = orm.Dish.objects(name__icontains=dish_name)
-        return [
-            orm_dish.name
-            for orm_dish in orm_dishes
-        ]
-
     def get_dish(self, dish_name: str) -> Dish:
-        orm_dish = orm.Dish.objects.get(name=dish_name)
-        return Dish(
+        try:
+            orm_dish = orm.Dish.objects.get(name=dish_name)
+        except DoesNotExist:
+            raise DishDoesNotExistError
+        
+        dish = Dish(
             name=orm_dish.name,
             calories=orm_dish.calories,
             proteins=orm_dish.proteins,
@@ -103,6 +106,20 @@ class DataAccessModule:
             tags=orm_dish.tags,
             img_src=orm_dish.img_src,
         )
+        return dish
+
+    def get_dishes_names(self, dish_name: str) -> list[str]:
+        orm_dishes = orm.Dish.objects(name__icontains=dish_name)
+        dishes = []
+        for orm_dish in orm_dishes:
+            name = orm_dish.name
+            try: 
+                calories_on_portion = int(orm_dish.calories / orm_dish.portions)
+            except ZeroDivisionError:
+                calories_on_portion = int(orm_dish.calories)
+            dish = tuple([name, calories_on_portion])
+            dishes.append(dish)
+        return dishes
 
     @utils.cache
     def get_name_recipes(self) -> dict[str, str]:

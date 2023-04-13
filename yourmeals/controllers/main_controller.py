@@ -25,7 +25,19 @@ class MainController(metaclass=utils.Singleton):
         self.dam.save_user(user)
         
     def update_user(self, email: str, name: str, age: int, weight: float, height: float, strategy: str, gender: str):
-        user = self.dam.get_user(email=email)
+        try:
+            user = self.dam.get_user(email=email)
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+            return utils.toJSON(response)
+
         user.name = name
         user.age = age
         user.weight = weight
@@ -35,7 +47,19 @@ class MainController(metaclass=utils.Singleton):
         self.dam.update_user(user)
     
     def add_meal_to_user(self, email: str, meal_type: str, date: datetime.datetime, ):
-        user = self.dam.get_user(email=email, add_history=True)
+        try:
+            user = self.dam.get_user(email=email, add_history=True)
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+            return utils.toJSON(response)
+
         meal = models.meal.get_meal(meal_type)
         meal.date = date.date()
         meal.time = date.time()
@@ -43,7 +67,19 @@ class MainController(metaclass=utils.Singleton):
         self.dam.update_user(user)
         
     def delete_meal(self, email: str, date: dict, time: dict):
-        user = self.dam.get_user(email=email, add_history=True)
+        try:
+            user = self.dam.get_user(email=email, add_history=True)
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+            return utils.toJSON(response)
+
         user.delete_meal(
             utils.dict_to_date(date), 
             utils.dict_to_time(time)
@@ -51,7 +87,19 @@ class MainController(metaclass=utils.Singleton):
         self.dam.update_user(user)
         
     def add_dish_to_meal(self, email: str, date: dict, time: dict, dishes: list[str]):
-        user = self.dam.get_user(email=email, add_history=True)
+        try:
+            user = self.dam.get_user(email=email, add_history=True)
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+            return utils.toJSON(response)
+
         date, time = utils.convert_dicts_to_date_time(date, time)
         meal = user.get_meal(date, time)
         for dish_name in dishes:
@@ -61,15 +109,44 @@ class MainController(metaclass=utils.Singleton):
         self.dam.update_user(user)
 
     def delete_dish_on_meal(self, email: str, date: dict, time: dict, dish_name: str):
-        user = self.dam.get_user(email=email, add_history=True)
+        try:
+            user = self.dam.get_user(email=email, add_history=True)
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+            return utils.toJSON(response)
+    
         date, time = utils.convert_dicts_to_date_time(date, time)
         meal = user.get_meal(date, time)
         meal.delete_dish(dish_name)
         self.dam.update_user(user)
+        response = {
+            "status": 200,
+            "message": f"OK. Deleted successfully {dish_name}",
+            "method": "delete_dish_on_meal"
+        }
+        return utils.toJSON(response)
     
     def get_dish(self, dish_name: str) -> str:
-        dish = self.dam.get_dish(dish_name=dish_name)
-        return utils.toJSON(dish)
+        try:
+            dish = self.dam.get_dish(dish_name)
+            response = dish  # Make it with code status and else...
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {dish_name} doesn't exist",
+                "method": "get_user"
+            }
+        return utils.toJSON(response)
     
     def get_dishes_names(self, dish_name: str) -> str:
         dishes = self.dam.get_dishes_names(dish_name=dish_name)
@@ -91,8 +168,19 @@ class MainController(metaclass=utils.Singleton):
         return utils.toJSON(response)
     
     def get_user_history(self, email: str) -> str:
-        user = self.dam.get_user(email=email, add_history=True)
-        return utils.toJSON(user)
+        try:
+            user = self.dam.get_user(email=email, add_history=True)
+            response = user  # Make it with code status and else...
+        except UserDoesNotExistError:
+            import traceback;
+            traceback.print_exc()
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"User with email {email} doesn't exist",
+                "method": "get_user"
+            }
+        return utils.toJSON(response)
     
     def get_full_meals_recommendation(self, email: str) -> str:
         rec_list = self.recommender.get_full_recommendation(email)
