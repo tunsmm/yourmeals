@@ -24,8 +24,9 @@ def login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.data['email']
-            user = json.loads(MainContr.get_user(email=email))
-            if user:
+            response = json.loads(MainContr.get_user(email=email))
+            if not 'error' in response:
+                user = response
                 response = HttpResponseRedirect('/user/')
                 email_signed = base64.b64encode(
                     email.encode()
