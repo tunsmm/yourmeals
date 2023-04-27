@@ -59,7 +59,7 @@ class DataAccessModule:
         try:
             orm_user = orm.User.objects.get(email=email)
         except DoesNotExist:
-            raise UserDoesNotExistError
+            raise UserDoesNotExistError("User doesn't exist")
         
         user = User(
             email=orm_user.email,
