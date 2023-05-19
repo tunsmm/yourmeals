@@ -6,7 +6,7 @@
     <a href="{% url 'meal-new' %}" class="btn btn-success" >Добавить прием пищи</a> <br>
     {% for key, meals in history.items %}
         <h4>
-            {{ key }} 
+            {{ key }}
         </h4>
         {% for meal in meals %}
             <h5>
