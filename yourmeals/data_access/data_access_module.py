@@ -65,11 +65,12 @@ class DataAccessModule:
             email=orm_user.email,
             name=orm_user.name,
             age=orm_user.age,
-            weight=orm_user.weight,
-            height=orm_user.height,
+            weight=round(orm_user.weight),
+            height=round(orm_user.height),
             gender=orm_user.gender,
             strategy=orm_user.strategy,
         )
+        
 
         if add_history and orm_user.history:
             for orm_meal in orm_user.history:
@@ -90,7 +91,7 @@ class DataAccessModule:
         try:
             orm_dish = orm.Dish.objects.get(name=dish_name)
         except DoesNotExist:
-            raise DishDoesNotExistError
+            raise DishDoesNotExistError(f"Dish {dish_name} does not exist")
         
         dish = Dish(
             name=orm_dish.name,
