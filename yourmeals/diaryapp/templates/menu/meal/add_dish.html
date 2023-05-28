@@ -10,7 +10,8 @@
         btn.addEventListener('click', async function(event) {
             event.preventDefault();
             let name = document.querySelector("input[name=name]").value;
-            let response = await fetch(`/menu/search/?name=${name}`);
+            let limit = document.querySelector("input[name=limit]").value;
+            let response = await fetch(`/menu/search/?name=${name}&limit=${limit}`);
             response.json().then(function(dishes) {
                 var search_dishes = dishes;
                 console.log(dishes);
@@ -20,7 +21,6 @@
                 sd_block.innerHTML = null;
 
                 let div = document.createElement("div");
-                // div.setAttribute("style","overflow-y:auto;height:500px;width:650px;margin-left:15px");
                 div.textContent = "";
                 if (typeof dishes != "undefined" && dishes != null && dishes.length != null && dishes.length > 0) {
                     // array exists and is not empty    
@@ -77,11 +77,12 @@
                 <form method="GET" action=".">
                     
                     <div class="form-group row">
-                        <label class="form-check-label">
-                            Наименование блюда: 
-                        </label>
+                        <label class="form-check-label">Наименование блюда:</label>
                         <input class="form-control" type="text" name="name" required id="id_name" placeholder="Авокадо" {% if name %}value="{{ name }}"{% endif %}>
                         <small id="nameHelp" class="form-text text-muted">Пожалуйста, напишите некоторые слова, которые должны быть в названии блюда</small>
+                        <br>
+                        <label class="form-check-label p-1">Количество блюд в поисковой выдаче не больше:</label>
+                        <input class="col-md-2" type="text" name="limit" required id="id_limit" placeholder="Количество блюд" value="100">
                         
                     </div>
                     

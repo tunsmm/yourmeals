@@ -70,7 +70,6 @@ class DataAccessModule:
             gender=orm_user.gender,
             strategy=orm_user.strategy,
         )
-        
 
         if add_history and orm_user.history:
             for orm_meal in orm_user.history:
@@ -109,8 +108,8 @@ class DataAccessModule:
         )
         return dish
 
-    def get_dishes_names(self, dish_name: str) -> list[str]:
-        orm_dishes = orm.Dish.objects(name__icontains=dish_name)
+    def get_dishes_names(self, dish_name: str, limit: int = 100) -> list[str]:
+        orm_dishes = orm.Dish.objects(name__icontains=dish_name).limit(limit)
         dishes = []
         for orm_dish in orm_dishes:
             name = orm_dish.name
