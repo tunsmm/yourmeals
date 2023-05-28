@@ -132,11 +132,22 @@ def meal_create(request):
 
 @authorize
 def get_dishes_by_name(request):
-    if request.GET['name']:
+    name = limit = None
+    if 'name' in request.GET:
         name = request.GET['name']
-        data = MainContr.get_dishes_names(name)
-        return JsonResponse(json.loads(data), safe=False)
-    return JsonResponse({"answer": None})
+    if 'limit' in request.GET:
+        limit = request.GET['limit']
+        try:
+            limit = int(limit)
+        except ValueError:
+            limit = None  # FIXME Add response if there is no int
+    response = MainContr.get_dishes_names(name, limit)
+    response = json.loads(response)
+    if response["status"] == 200:
+        data = response["dishes"]
+    elif response["status"] == 400:
+        data = None
+    return JsonResponse(data, safe=False)
 
 
 @authorize

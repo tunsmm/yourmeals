@@ -148,9 +148,26 @@ class MainController(metaclass=utils.Singleton):
             }
         return utils.toJSON(response)
     
-    def get_dishes_names(self, dish_name: str) -> str:
-        dishes = self.dam.get_dishes_names(dish_name=dish_name)
-        return utils.toJSON(dishes)
+    def get_dishes_names(self, dish_name: str, limit: int = 100) -> str:
+        if not dish_name:
+            dishes = []
+        else:
+            dishes = self.dam.get_dishes_names(dish_name, limit)
+            
+        if dishes:
+            response = {
+                "status": 200,
+                "dishes": dishes
+            }
+        else:
+            response = {
+                "status": 400,
+                "error": "Bad Request",
+                "message": f"Dishes with name {dish_name} doesn't exist",
+                "method": "get_dishes_names"
+            }
+        response = utils.toJSON(response)
+        return response
     
     def get_user(self, email: str) -> str:
         try:
